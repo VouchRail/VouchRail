@@ -1,0 +1,42 @@
+name: Feature request
+description: Suggest a new capability for AuditLayer
+title: "[feat] "
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Describe the user / compliance / engineering pain.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Affected surface
+      options:
+        - "@auditlayer/sdk"
+        - "@auditlayer/cli"
+        - "@auditlayer/schema"
+        - "docs"
+        - "examples"
+        - "other"
+    validations:
+      required: true
+  - type: checkboxes
+    id: schema
+    attributes:
+      label: Schema impact
+      options:
+        - label: This would require a change to the AuditLogEntry schema.
+        - label: This would require a change to canonicalization or hashing.

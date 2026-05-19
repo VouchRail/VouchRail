@@ -1,0 +1,96 @@
+{
+  "name": "@auditlayer/sdk",
+  "version": "0.1.0",
+  "description": "AuditLayer SDK — wrap LLM and agent framework calls to produce Article 12-compliant, tamper-evident audit logs.",
+  "license": "Apache-2.0",
+  "author": "AuditLayer Contributors",
+  "homepage": "https://github.com/auditlayer/auditlayer/tree/main/packages/sdk",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/auditlayer/auditlayer.git",
+    "directory": "packages/sdk"
+  },
+  "bugs": {
+    "url": "https://github.com/auditlayer/auditlayer/issues"
+  },
+  "keywords": [
+    "eu-ai-act",
+    "article-12",
+    "audit-log",
+    "compliance",
+    "tamper-evident",
+    "hash-chain",
+    "anthropic",
+    "openai",
+    "llm",
+    "gdpr",
+    "pii"
+  ],
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./backends/local": {
+      "import": "./dist/backends/local.js",
+      "types": "./dist/backends/local.d.ts"
+    },
+    "./backends/s3": {
+      "import": "./dist/backends/s3.js",
+      "types": "./dist/backends/s3.d.ts"
+    },
+    "./pii": {
+      "import": "./dist/pii.js",
+      "types": "./dist/pii.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18.18"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rm -rf dist coverage",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint \"src/**/*.ts\""
+  },
+  "dependencies": {
+    "@auditlayer/schema": "workspace:^"
+  },
+  "peerDependencies": {
+    "@anthropic-ai/sdk": ">=0.20.0",
+    "@aws-sdk/client-s3": ">=3.500.0",
+    "better-sqlite3": ">=11.0.0",
+    "openai": ">=4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@anthropic-ai/sdk": { "optional": true },
+    "@aws-sdk/client-s3": { "optional": true },
+    "better-sqlite3": { "optional": true },
+    "openai": { "optional": true }
+  },
+  "devDependencies": {
+    "@anthropic-ai/sdk": "^0.27.0",
+    "@aws-sdk/client-s3": "^3.600.0",
+    "@types/node": "^20.14.0",
+    "openai": "^4.50.0",
+    "typescript": "^5.5.0",
+    "vitest": "^2.0.0",
+    "@vitest/coverage-v8": "^2.0.0"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "name": "auditlayer-monorepo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AuditLayer — EU AI Act Article 12 audit log infrastructure (monorepo root).",
+  "license": "Apache-2.0",
+  "author": "jeffry1829 <jeffry1829@gmail.com>",
+  "homepage": "https://github.com/auditlayer/auditlayer",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/auditlayer/auditlayer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/auditlayer/auditlayer/issues"
+  },
+  "engines": {
+    "node": ">=18.18"
+  },
+  "packageManager": "pnpm@8.15.9",
+  "scripts": {
+    "build": "pnpm --filter='./packages/*' -r run build",
+    "test": "pnpm --filter='./packages/*' -r run test",
+    "test:coverage": "pnpm --filter='./packages/*' -r run test:coverage",
+    "lint": "pnpm --filter='./packages/*' -r run lint",
+    "typecheck": "pnpm --filter='./packages/*' --filter='./examples/*' -r run typecheck",
+    "clean": "pnpm -r run clean && rm -rf node_modules",
+    "format": "prettier --write \"**/*.{ts,tsx,js,json,md,yml,yaml}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,json,md,yml,yaml}\"",
+    "example:resume": "pnpm --filter @auditlayer/example-resume-screening start",
+    "example:credit": "pnpm --filter @auditlayer/example-credit-decision start",
+    "example:health": "pnpm --filter @auditlayer/example-healthcare-triage start"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.3.0",
+    "typescript": "^5.5.0",
+    "vitest": "^2.0.0",
+    "@vitest/coverage-v8": "^2.0.0"
+  }
+}

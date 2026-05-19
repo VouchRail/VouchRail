@@ -1,0 +1,62 @@
+{
+  "name": "@auditlayer/cli",
+  "version": "0.1.0",
+  "description": "AuditLayer CLI — query, verify, and export hash-chained audit logs. Verification works offline (no AuditLayer cloud required).",
+  "license": "Apache-2.0",
+  "author": "AuditLayer Contributors",
+  "homepage": "https://github.com/auditlayer/auditlayer/tree/main/packages/cli",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/auditlayer/auditlayer.git",
+    "directory": "packages/cli"
+  },
+  "bugs": {
+    "url": "https://github.com/auditlayer/auditlayer/issues"
+  },
+  "keywords": [
+    "eu-ai-act",
+    "article-12",
+    "audit",
+    "cli",
+    "verify",
+    "tamper-evident"
+  ],
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "auditlayer": "./dist/bin.js"
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18.18"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rm -rf dist coverage",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint \"src/**/*.ts\""
+  },
+  "dependencies": {
+    "@auditlayer/schema": "workspace:^",
+    "@auditlayer/sdk": "workspace:^",
+    "commander": "^12.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "typescript": "^5.5.0",
+    "vitest": "^2.0.0",
+    "@vitest/coverage-v8": "^2.0.0"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "name": "@auditlayer/example-healthcare-triage",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Example: AI healthcare triage (Annex III high-risk) with AuditLayer.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@auditlayer/schema": "workspace:^",
+    "@auditlayer/sdk": "workspace:^"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "tsx": "^4.16.0",
+    "typescript": "^5.5.0"
+  }
+}

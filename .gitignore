@@ -1,0 +1,49 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output
+dist/
+build/
+*.tsbuildinfo
+coverage/
+.turbo/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Env
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json.example
+
+# Local audit fixtures
+audit-logs/
+*.auditlayer.local/
+*.sqlite
+*.sqlite-journal
+
+# Cache
+.eslintcache
+.cache/
+
+# Local session tooling (Claude Code skills / agent state — not part of OSS)
+.agents/
+skills-lock.json
+
+# Personal / pre-public development notes (not part of OSS)
+dev_docs/

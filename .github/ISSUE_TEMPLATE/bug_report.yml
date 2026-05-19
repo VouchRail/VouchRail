@@ -1,0 +1,55 @@
+name: Bug report
+description: Report a bug in AuditLayer
+title: "[bug] "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Do not file a security vulnerability here.** See [SECURITY.md](../SECURITY.md).
+
+        For bugs affecting hash chain integrity, signing, canonicalization,
+        retention enforcement, or any path with audit-evidence impact, please
+        also check the boxes in the "Audit evidence impact" section below.
+  - type: input
+    id: version
+    attributes:
+      label: AuditLayer version
+      placeholder: "@auditlayer/sdk 0.1.0 / @auditlayer/cli 0.1.0"
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      placeholder: "Node 20.x / macOS 14 / Linux x86_64"
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Minimal reproduction
+      description: Steps, code, or a small repository.
+    validations:
+      required: true
+  - type: checkboxes
+    id: evidence
+    attributes:
+      label: Audit evidence impact
+      options:
+        - label: This bug could allow modification of an audit log entry without breaking the chain.
+        - label: This bug could cause `auditlayer verify` to return a false-positive (chain looks valid when it is not).
+        - label: This bug could leak PII outside the configured redaction policy.
+        - label: This bug could allow signing-key material to be exposed.
