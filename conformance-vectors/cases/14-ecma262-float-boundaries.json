@@ -1,0 +1,19 @@
+{
+  "name": "ecma262-float-formatting-boundaries",
+  "description": "Floats near the ECMA-262 NumberToString positional/scientific switching boundaries (RFC 8785 §3.2.2.3). Catches the previous Python json.dumps vs JS JSON.stringify divergence on small floats and integer-valued floats outside the safe-integer range.",
+  "input": {
+    "p_1e-4": 0.0001,
+    "p_1e-5": 0.00001,
+    "p_1e-6": 0.000001,
+    "p_1e-7": 1e-7,
+    "p_1.5e-7": 1.5e-7,
+    "p_1e20": 100000000000000000000,
+    "p_1e21": 1e21,
+    "p_1.5e21": 1.5e21,
+    "p_pi": 3.14159265358979,
+    "p_neg_small": -0.000001,
+    "p_neg_zero": 0
+  },
+  "canonical": "{\"p_1.5e-7\":1.5e-7,\"p_1.5e21\":1.5e+21,\"p_1e-4\":0.0001,\"p_1e-5\":0.00001,\"p_1e-6\":0.000001,\"p_1e-7\":1e-7,\"p_1e20\":100000000000000000000,\"p_1e21\":1e+21,\"p_neg_small\":-0.000001,\"p_neg_zero\":0,\"p_pi\":3.14159265358979}",
+  "sha256": "f25ea44da2156da8fb3309380ec41e0f5d22cddf8f4f3e7b428083f829c0cc45"
+}

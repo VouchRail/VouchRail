@@ -80,13 +80,81 @@ def _serialize_float(value: float) -> str:
     if math.isnan(value) or math.isinf(value):
         raise TypeError("canonicalize: non-finite numbers are not valid JCS")
     if value.is_integer() and abs(value) <= 2**53 - 1:
-        # JSON.stringify(1.0) → '1'; mirror that.
+        # JSON.stringify(1.0) -> "1"; mirror that for safe-integer-valued floats.
         return str(int(value))
-    # json.dumps uses the shortest round-trippable representation, matching
-    # ECMA-262 ToString(Number) for normal doubles. Disable ensure_ascii so
-    # the output is a Python str of valid JSON for the number.
-    encoded = json.dumps(value, ensure_ascii=False)
-    return encoded
+    return _ecma262_number_to_string(value)
+
+
+def _ecma262_number_to_string(x: float) -> str:
+    """ECMA-262 Number::toString (a.k.a. JS ``JSON.stringify`` for numbers).
+
+    RFC 8785 §3.2.2.3 references this algorithm for canonical numeric output.
+    Python's :func:`json.dumps` does NOT match it: Python switches to
+    scientific notation around 1e-5 while JS uses positional notation down to
+    1e-7. Without this function the conformance vectors silently drift apart
+    for any float with magnitude smaller than 1e-4 or any integer-valued
+    float between 2^53 and 1e21.
+
+    Algorithm (paraphrased from ECMA-262 §6.1.6.1.13):
+    Given x != 0, extract integers ``s`` (significant digits, no trailing
+    zeros) and ``n`` such that ``s`` has ``k`` digits and ``s * 10^(n-k) = x``.
+    Then:
+
+    * If ``k <= n <= 21``: positional integer, append ``n-k`` trailing zeros.
+    * If ``0 < n <= 21``: positional with decimal point at position ``n``.
+    * If ``-6 < n <= 0``: positional ``"0."`` + ``-n`` leading zeros + digits.
+    * If ``k == 1`` (and outside positional range): ``d e<sign><abs(n-1)>``.
+    * Otherwise: ``d.<rest> e<sign><abs(n-1)>``.
+
+    Python's :func:`repr` returns the shortest round-trippable decimal for
+    any IEEE 754 double, matching V8. We extract the same significant digits
+    Python produces and re-format per ECMA-262.
+    """
+    if x == 0:
+        # +0 and -0 both serialize as "0".
+        return "0"
+    if x < 0:
+        return "-" + _ecma262_number_to_string(-x)
+
+    # repr(x) returns the shortest round-trippable decimal, with formatting
+    # that differs from ECMA-262 only in where the scientific/positional
+    # cutoff lies. We strip the formatting and re-apply ECMA-262 rules.
+    s = repr(x)
+    if "e" in s:
+        mantissa_str, exp_part = s.split("e")
+        e_offset = int(exp_part)
+    else:
+        mantissa_str = s
+        e_offset = 0
+
+    if "." in mantissa_str:
+        int_part, frac_part = mantissa_str.split(".")
+    else:
+        int_part, frac_part = mantissa_str, ""
+
+    combined = (int_part + frac_part).lstrip("0")
+    if not combined:
+        return "0"
+
+    leading_zeros_stripped = (len(int_part) + len(frac_part)) - len(combined)
+    leading_exp = (len(int_part) - 1) - leading_zeros_stripped + e_offset
+
+    digits = combined.rstrip("0") or "0"
+    k = len(digits)
+    n = leading_exp + 1
+
+    if 1 <= n <= 21 and n >= k:
+        return digits + "0" * (n - k)
+    if 0 < n < k and n <= 21:
+        return digits[:n] + "." + digits[n:]
+    if -6 < n <= 0:
+        return "0." + "0" * (-n) + digits
+
+    sign = "+" if n - 1 >= 0 else "-"
+    abs_exp = abs(n - 1)
+    if k == 1:
+        return f"{digits}e{sign}{abs_exp}"
+    return f"{digits[0]}.{digits[1:]}e{sign}{abs_exp}"
 
 
 def _serialize_string(value: str) -> str:

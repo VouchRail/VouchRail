@@ -46,6 +46,35 @@ def test_float_fractional():
     assert canonicalize(0.1) == "0.1"
 
 
+def test_float_ecma262_positional_lower_boundary():
+    # ECMA-262 NumberToString keeps positional notation down to 10^-6.
+    # Below that it switches to scientific. Locks the cross-language contract
+    # with JS JSON.stringify; Python's json.dumps would diverge here.
+    assert canonicalize(0.000001) == "0.000001"
+    assert canonicalize(0.0000001) == "1e-7"
+    assert canonicalize(0.00000015) == "1.5e-7"
+
+
+def test_float_ecma262_positional_upper_boundary():
+    # ECMA-262 keeps positional notation up to and including 10^20; at 10^21
+    # it switches to scientific. Catches the divergence at 1e16-1e20 where
+    # Python json.dumps would emit "1e+16" but JS emits "10000000000000000".
+    assert canonicalize(1e16) == "10000000000000000"
+    assert canonicalize(1e20) == "100000000000000000000"
+    assert canonicalize(1e21) == "1e+21"
+    assert canonicalize(1.5e21) == "1.5e+21"
+
+
+def test_float_negative_zero_serializes_as_zero():
+    # ECMA-262: +0 and -0 both -> "0".
+    assert canonicalize(-0.0) == "0"
+
+
+def test_float_negative_sign_preserved():
+    assert canonicalize(-0.5) == "-0.5"
+    assert canonicalize(-0.000001) == "-0.000001"
+
+
 def test_string():
     assert canonicalize("hello") == '"hello"'
     assert canonicalize("a\tb") == '"a\\tb"'
