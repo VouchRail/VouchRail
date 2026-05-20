@@ -112,7 +112,7 @@ async function main() {
       modelVersion: '2026-04',
       modelConfiguration: { policyVersion: CREDIT_POLICY.policyVersion },
       promptTemplateId: 'credit-scoring-policy-v7',
-      promptTemplateVersion: '7.1.0',
+      promptTemplateVersion: CREDIT_POLICY.promptTemplateVersion,
       operatorId: 'credit-engine',
       input: a,
     });
@@ -123,11 +123,16 @@ async function main() {
       reasonCodes: out.reasonCodes,
       humanReview: needsReview
         ? {
-            reviewerId: 'credit-officer-12',
+            reviewerId: CREDIT_POLICY.reviewerId,
             reviewedAt: new Date().toISOString(),
             decision: 'override',
             rationale: 'Manual underwriting after escalation; offered reduced limit.',
-            finalDecision: { ...out, decision: 'approve', limit: 8000, aprBps: 1500 },
+            finalDecision: {
+              ...out,
+              decision: 'approve',
+              limit: CREDIT_POLICY.manualOverrideLimit,
+              aprBps: CREDIT_POLICY.manualOverrideAprBps,
+            },
           }
         : undefined,
       riskFlags: needsReview ? ['high_dti'] : undefined,
