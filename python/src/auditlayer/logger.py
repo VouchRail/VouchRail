@@ -2,9 +2,13 @@
 
 from __future__ import annotations
 
+import functools
+import inspect
 import threading
+from collections.abc import Callable, Iterator
+from contextlib import contextmanager
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, TypeVar
 
 from .defaults import RETENTION_DEFAULTS
 from .errors import (
@@ -30,6 +34,8 @@ from .util import (
 )
 
 RECORDED_BY = f"{SDK_NAME}@{SDK_VERSION}"
+
+_R = TypeVar("_R")
 
 
 @dataclass
@@ -226,6 +232,97 @@ class AuditLogger(ProviderHostLogger):
         self.storage.close()
         if self._pii_token_store is not None:
             self._pii_token_store.close()
+
+    # ---------------------------------------------------- ergonomic helpers
+
+    @contextmanager
+    def case(
+        self,
+        *,
+        case_id: str,
+        operator_id: str,
+        prompt_template_id: str = "default",
+        prompt_template_version: str = "1.0.0",
+        session_id: str | None = None,
+        parent_call_id: str | None = None,
+    ) -> Iterator[WrapContext]:
+        """Spec §2.2 Pattern 2: scoped audit context.
+
+        Usage::
+
+            with audit.case(case_id="candidate-123", operator_id="system") as ctx:
+                audit.wrap(Anthropic(), context=ctx)
+                ...
+
+        The context manager does NOT start/end a call by itself — it returns
+        a ``WrapContext`` configured with the case-level identifiers so the
+        caller can hand it to ``audit.wrap`` / ``audit.wrap_async``. On exit,
+        no audit entry is automatically generated; the wrapped client's
+        intercepted calls already do that.
+        """
+
+        yield WrapContext(
+            case_id=case_id,
+            prompt_template_id=prompt_template_id,
+            prompt_template_version=prompt_template_version,
+            operator_id=operator_id,
+            session_id=session_id,
+            parent_call_id=parent_call_id,
+        )
+
+    def track(
+        self,
+        *,
+        case_id_from: Callable[..., str],
+        operator_id: str = "system",
+        prompt_template_id: str = "default",
+        prompt_template_version: str = "1.0.0",
+    ) -> Callable[[Callable[..., _R]], Callable[..., _R]]:
+        """Spec §2.6 decorator: ``@audit.track(case_id_from=lambda x: x.id)``.
+
+        The decorated function executes inside an audit context whose
+        ``case_id`` is derived from the function's arguments via
+        ``case_id_from(*args, **kwargs)``. The decorator does NOT itself emit
+        an audit entry; it is a documentation + ergonomic anchor for the
+        case scope. Wrapped clients used inside the function pick up the
+        case-level context via the ``WrapContext`` the caller passes to
+        ``audit.wrap``.
+
+        Both sync and async functions are supported.
+        """
+
+        audit_self = self
+
+        def decorator(fn: Callable[..., _R]) -> Callable[..., _R]:
+            if inspect.iscoroutinefunction(fn):
+
+                @functools.wraps(fn)
+                async def async_wrapper(*args: Any, **kwargs: Any) -> _R:
+                    case_id = case_id_from(*args, **kwargs)
+                    with audit_self.case(
+                        case_id=case_id,
+                        operator_id=operator_id,
+                        prompt_template_id=prompt_template_id,
+                        prompt_template_version=prompt_template_version,
+                    ):
+                        return await fn(*args, **kwargs)  # type: ignore[no-any-return,misc]
+
+                return async_wrapper  # type: ignore[return-value]
+
+            @functools.wraps(fn)
+            def sync_wrapper(*args: Any, **kwargs: Any) -> _R:
+                case_id = case_id_from(*args, **kwargs)
+                with audit_self.case(
+                    case_id=case_id,
+                    operator_id=operator_id,
+                    prompt_template_id=prompt_template_id,
+                    prompt_template_version=prompt_template_version,
+                ):
+                    return fn(*args, **kwargs)
+
+            return sync_wrapper
+
+        return decorator
 
     # ------------------------------------------------------------ persistence
 
