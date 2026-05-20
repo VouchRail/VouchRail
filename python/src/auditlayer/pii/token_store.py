@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
+import datetime as _dt
 import secrets
+import sqlite3
 from abc import ABC, abstractmethod
+from pathlib import Path
 
 from ..defaults import PII_DEFAULTS
 
@@ -66,3 +69,64 @@ class InMemoryPiiTokenStore(PiiTokenStore):
             meta = self._reverse.pop(t, None)
             if meta is not None:
                 self._forward.pop(meta[1], None)
+
+
+class SqlitePiiTokenStore(PiiTokenStore):
+    """File-backed token store using Python's stdlib ``sqlite3``.
+
+    Mirrors ``SqlitePiiTokenStore`` in ``packages/sdk/src/pii.ts``. The TS
+    version depends on the optional ``better-sqlite3`` peer dep; the Python
+    version uses the stdlib so no extra install is needed. Schema is
+    intentionally identical so the same database file can be opened by
+    either runtime if a customer ever decides to share state.
+    """
+
+    def __init__(self, path: str | Path) -> None:
+        self._path = str(path)
+        # ``check_same_thread=False`` lets multiple threads share the
+        # connection; access is serialized at the SQL level via short
+        # transactions.
+        self._conn = sqlite3.connect(self._path, check_same_thread=False, isolation_level=None)
+        self._conn.execute("PRAGMA journal_mode=WAL")
+        self._conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS pii_tokens (
+              case_id TEXT NOT NULL,
+              field_key TEXT NOT NULL,
+              value TEXT NOT NULL,
+              token TEXT NOT NULL UNIQUE,
+              created_at TEXT NOT NULL,
+              PRIMARY KEY (case_id, field_key, value)
+            )
+            """,
+        )
+        self._conn.execute("CREATE INDEX IF NOT EXISTS idx_pii_token ON pii_tokens(token)")
+        self._conn.execute("CREATE INDEX IF NOT EXISTS idx_pii_case ON pii_tokens(case_id)")
+
+    def get_or_create_token(self, case_id: str, field_key: str, value: str) -> str:
+        cur = self._conn.execute(
+            "SELECT token FROM pii_tokens WHERE case_id = ? AND field_key = ? AND value = ?",
+            (case_id, field_key, value),
+        )
+        row = cur.fetchone()
+        if row is not None:
+            return str(row[0])
+        token = _mint_pseudonym()
+        created_at = _dt.datetime.now(tz=_dt.timezone.utc).isoformat()
+        self._conn.execute(
+            "INSERT INTO pii_tokens (case_id, field_key, value, token, created_at) "
+            "VALUES (?, ?, ?, ?, ?)",
+            (case_id, field_key, value, token, created_at),
+        )
+        return token
+
+    def reveal(self, token: str) -> str | None:
+        cur = self._conn.execute("SELECT value FROM pii_tokens WHERE token = ?", (token,))
+        row = cur.fetchone()
+        return str(row[0]) if row is not None else None
+
+    def erase_case(self, case_id: str) -> None:
+        self._conn.execute("DELETE FROM pii_tokens WHERE case_id = ?", (case_id,))
+
+    def close(self) -> None:
+        self._conn.close()

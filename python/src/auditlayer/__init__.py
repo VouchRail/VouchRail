@@ -20,7 +20,14 @@ from .errors import (
     AuditLayerStorageError,
 )
 from .logger import RECORDED_BY, AuditLogger
-from .pii import InMemoryPiiTokenStore, PiiRedactor, PiiTokenStore, detect_pii, hash_string
+from .pii import (
+    InMemoryPiiTokenStore,
+    PiiRedactor,
+    PiiTokenStore,
+    SqlitePiiTokenStore,
+    detect_pii,
+    hash_string,
+)
 from .pii_patterns import (
     ALL_PII_PATTERN_NAMES,
     DEFAULT_ENABLED_PII_PATTERNS,
@@ -108,6 +115,7 @@ __all__ = [
     "ProviderHostLogger",
     # Signers
     "Signer",
+    "SqlitePiiTokenStore",
     # Storage
     "StorageBackend",
     "WrapContext",
