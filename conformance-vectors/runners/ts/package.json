@@ -1,0 +1,17 @@
+{
+  "name": "@auditlayer/conformance-runner-ts",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "tsx run.ts generate",
+    "verify": "tsx run.ts verify"
+  },
+  "dependencies": {
+    "@auditlayer/schema": "workspace:^"
+  },
+  "devDependencies": {
+    "tsx": "^4.16.0",
+    "typescript": "^5.5.0"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "unicode-keys",
+  "description": "Non-ASCII keys sorted by UTF-16 code unit",
+  "input": {
+    "Ä": 1,
+    "Z": 2,
+    "ä": 3,
+    "z": 4,
+    "ñ": 5
+  },
+  "canonical": "{\"Z\":2,\"z\":4,\"Ä\":1,\"ä\":3,\"ñ\":5}",
+  "sha256": "3ba819a8fde9400079dbdee8d0d065e0e2863339388f589d727661bdd52afdc8"
+}

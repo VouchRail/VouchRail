@@ -66,3 +66,84 @@ jobs:
           path: |
             packages/*/coverage/
           retention-days: 14
+
+  python-test:
+    name: Python ${{ matrix.python }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.10', '3.11', '3.12']
+    defaults:
+      run:
+        working-directory: python
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .[dev]
+
+      - name: Lint (ruff)
+        run: ruff check src tests
+
+      - name: Type-check (mypy, schema subpackage only)
+        # mypy strict gated on the schema subpackage; other subpackages add as
+        # they ship. Do not mask failures with `|| true` — fix the source.
+        run: mypy src/auditlayer/schema
+
+      - name: Test
+        run: pytest --cov=auditlayer --cov-report=xml
+
+      - name: Upload coverage artifact
+        if: matrix.python == '3.12'
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-coverage
+          path: python/coverage.xml
+          retention-days: 14
+
+  conformance:
+    name: Cross-language conformance vectors
+    needs: [build-test, python-test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 8.15.9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: pnpm
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Node deps
+        run: pnpm install --frozen-lockfile
+
+      - name: Build schema
+        run: pnpm --filter='./packages/schema' build
+
+      - name: Install Python SDK
+        working-directory: python
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+
+      - name: Verify (TypeScript runner)
+        working-directory: conformance-vectors/runners/ts
+        run: pnpm run verify
+
+      - name: Verify (Python runner)
+        run: python3 conformance-vectors/runners/python/run.py
