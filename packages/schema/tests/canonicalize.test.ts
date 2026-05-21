@@ -81,4 +81,32 @@ describe('canonicalize (RFC 8785 JCS)', () => {
     const v = { é: 1, a: 2 };
     expect(canonicalize(v)).toBe('{"a":2,"é":1}');
   });
+
+  it('honors ECMA-262 NumberToString positional/scientific boundary (RFC 8785 §3.2.2.3)', () => {
+    // Lower boundary: 1e-6 is the smallest magnitude rendered positionally.
+    expect(canonicalize(0.000001)).toBe('0.000001');
+    expect(canonicalize(0.0000001)).toBe('1e-7');
+    // Upper boundary: integer-valued floats up to 1e20 are positional.
+    expect(canonicalize(1e16)).toBe('10000000000000000');
+    expect(canonicalize(1e20)).toBe('100000000000000000000');
+    expect(canonicalize(1e21)).toBe('1e+21');
+  });
+
+  it('sorts object keys by UTF-16 code unit including surrogate pairs', () => {
+    // 😀 (U+1F600) encodes as surrogate pair D83D DE00. Per RFC 8785 §3.2.3,
+    // the high surrogate (0xD83D) sorts before BMP characters 0xE000+, so the
+    // emoji key sorts AFTER the ASCII letters 'a' and 'z'.
+    const out = canonicalize({ '\u{1F600}': 1, z: 2, a: 3 });
+    expect(out).toBe('{"a":3,"z":2,"😀":1}');
+  });
+
+  it('does not escape U+2028 / U+2029 (ES2019+ JSON.stringify behavior)', () => {
+    const out = canonicalize({ ls: ' ', ps: ' ' });
+    expect(out).toBe('{"ls":" ","ps":" "}');
+  });
+
+  it('emits empty containers verbatim', () => {
+    expect(canonicalize('')).toBe('""');
+    expect(canonicalize({ empty: '', arr: [], obj: {} })).toBe('{"arr":[],"empty":"","obj":{}}');
+  });
 });

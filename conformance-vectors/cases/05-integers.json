@@ -1,0 +1,13 @@
+{
+  "name": "integers",
+  "description": "Mixed integers across safe-integer boundary",
+  "input": {
+    "zero": 0,
+    "small": 1,
+    "negativeSmall": -1,
+    "maxSafe": 9007199254740991,
+    "negativeMaxSafe": -9007199254740991
+  },
+  "canonical": "{\"maxSafe\":9007199254740991,\"negativeMaxSafe\":-9007199254740991,\"negativeSmall\":-1,\"small\":1,\"zero\":0}",
+  "sha256": "9698b6c39a0bf14e83d24d5f4a2352361e63e9463dd3e084c90c6dea845d62a1"
+}

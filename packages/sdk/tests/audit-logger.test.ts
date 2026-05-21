@@ -8,6 +8,7 @@ import { verifyChain } from '@auditlayer/schema';
 
 import { AuditLogger } from '../src/audit-logger.js';
 import { LocalStorageBackend } from '../src/backends/local.js';
+import { AuditLayerLifecycleError, AuditLayerProviderError, ERROR_CODES } from '../src/errors.js';
 
 const TEST_SECRET = 'test-secret-key-with-enough-length-1234567890';
 
@@ -91,9 +92,15 @@ describe('AuditLogger', () => {
     await audit.close();
   });
 
-  it('rejects endCall for unknown callId', async () => {
+  it('rejects endCall for unknown callId with AuditLayerLifecycleError', async () => {
     const audit = makeLogger(dir);
-    await expect(audit.endCall('unknown', {})).rejects.toThrow(/pending set/);
+    try {
+      await audit.endCall('unknown', {});
+      throw new Error('expected endCall to throw');
+    } catch (err) {
+      expect(err).toBeInstanceOf(AuditLayerLifecycleError);
+      expect((err as AuditLayerLifecycleError).code).toBe(ERROR_CODES.LOGGER_CALL_NOT_PENDING);
+    }
     await audit.close();
   });
 
@@ -177,14 +184,18 @@ describe('AuditLogger', () => {
 
   it('wrap() rejects unsupported clients', () => {
     const audit = makeLogger(dir);
-    expect(() =>
+    try {
       audit.wrap({} as object, {
         caseId: 'c',
         promptTemplateId: 'p',
         promptTemplateVersion: '1.0',
         operatorId: 'o',
-      }),
-    ).toThrow(/neither an Anthropic nor OpenAI/);
+      });
+      throw new Error('expected wrap() to throw');
+    } catch (err) {
+      expect(err).toBeInstanceOf(AuditLayerProviderError);
+      expect((err as AuditLayerProviderError).code).toBe(ERROR_CODES.PROVIDER_UNSUPPORTED_CLIENT);
+    }
   });
 
   it('wrap() intercepts Anthropic messages.create()', async () => {

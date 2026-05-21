@@ -1,0 +1,21 @@
+{
+  "name": "nested-objects",
+  "description": "Recursive canonicalization through nested structures",
+  "input": {
+    "outer": {
+      "inner": {
+        "deep": [
+          1,
+          2,
+          {
+            "leaf": "ok"
+          }
+        ]
+      },
+      "siblings": ["a", "b"]
+    },
+    "after": true
+  },
+  "canonical": "{\"after\":true,\"outer\":{\"inner\":{\"deep\":[1,2,{\"leaf\":\"ok\"}]},\"siblings\":[\"a\",\"b\"]}}",
+  "sha256": "aa2556d1440c0a2835a8eb5c85d8cc741e2d99848192d7f79b888491cf9e8e28"
+}

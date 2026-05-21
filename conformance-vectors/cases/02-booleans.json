@@ -1,0 +1,7 @@
+{
+  "name": "booleans",
+  "description": "Boolean array preserves declared order",
+  "input": [true, false, true],
+  "canonical": "[true,false,true]",
+  "sha256": "e5b9a37d4601777b92e68e2f556d3ca1cb67f8085802a7022b1c179541a33658"
+}

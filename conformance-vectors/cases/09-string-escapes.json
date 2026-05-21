@@ -1,0 +1,14 @@
+{
+  "name": "string-escapes",
+  "description": "JCS short-form escape sequences plus control-char Unicode escape",
+  "input": {
+    "tab": "a\tb",
+    "newline": "a\nb",
+    "backslash": "a\\b",
+    "quote": "a\"b",
+    "controlBel": "a\u0007b",
+    "unicodeNFC": "café"
+  },
+  "canonical": "{\"backslash\":\"a\\\\b\",\"controlBel\":\"a\\u0007b\",\"newline\":\"a\\nb\",\"quote\":\"a\\\"b\",\"tab\":\"a\\tb\",\"unicodeNFC\":\"café\"}",
+  "sha256": "942d040ebf1241b0a23a6eb08f7fd5353b00a07ec78afeab841408ec63b45eac"
+}

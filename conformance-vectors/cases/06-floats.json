@@ -1,0 +1,12 @@
+{
+  "name": "floats",
+  "description": "Shortest round-trip float representation",
+  "input": {
+    "half": 0.5,
+    "tenth": 0.1,
+    "third": 0.3333333333333333,
+    "negativeHalf": -0.5
+  },
+  "canonical": "{\"half\":0.5,\"negativeHalf\":-0.5,\"tenth\":0.1,\"third\":0.3333333333333333}",
+  "sha256": "3bc37002db2290be7e6d73d622e92e65990f4c5e522054df24e628f7f42c1ce6"
+}

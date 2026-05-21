@@ -8,6 +8,7 @@ import { AuditLogEntrySchema, verifyChain, type AuditLogEntry } from '@auditlaye
 
 import { AuditLogger } from '../src/audit-logger.js';
 import { LocalStorageBackend } from '../src/backends/local.js';
+import { STORAGE_DEFAULTS } from '../src/defaults.js';
 
 const TEST_SECRET = 'test-secret-key-with-enough-length-1234567890';
 
@@ -16,7 +17,7 @@ function walk(dir: string): string[] {
   for (const name of readdirSync(dir)) {
     const p = join(dir, name);
     if (statSync(p).isDirectory()) out.push(...walk(p));
-    else if (p.endsWith('.jsonl')) out.push(p);
+    else if (p.endsWith(STORAGE_DEFAULTS.jsonlExtension)) out.push(p);
   }
   return out;
 }
