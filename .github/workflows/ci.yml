@@ -33,6 +33,13 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: pnpm
 
+      - name: Install node-gyp
+        # pnpm/action-setup@6 stopped bundling node-gyp; the better-sqlite3
+        # peer dep needs it to build from source on Node versions without
+        # prebuilt binaries (currently 18.18 and 20). Install globally so
+        # ``pnpm install`` picks it up.
+        run: npm install -g node-gyp
+
       - name: Install
         run: pnpm install --frozen-lockfile
 
