@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+import shutil
 import sqlite3
 import tempfile
+from contextlib import closing
 from pathlib import Path
 
 import pytest
@@ -13,14 +15,23 @@ from vouchrail import PiiRedactor, SqlitePiiTokenStore
 
 @pytest.fixture()
 def store_path() -> str:
-    with tempfile.TemporaryDirectory(prefix="vouchrail-sqlite-") as d:
+    # mkdtemp + rmtree(ignore_errors=True) rather than TemporaryDirectory:
+    # on Windows, sqlite occasionally holds a brief handle past .close() and
+    # the strict TemporaryDirectory cleanup raises PermissionError.
+    d = tempfile.mkdtemp(prefix="vouchrail-sqlite-")
+    try:
         yield str(Path(d) / "pii.sqlite")
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
 
 
 def test_creates_schema_on_first_use(store_path: str) -> None:
     store = SqlitePiiTokenStore(store_path)
     try:
-        with sqlite3.connect(store_path) as conn:
+        # closing() guarantees the verification connection is released before
+        # the tempdir is torn down, even on Windows where ``with sqlite3.connect``
+        # does not close the connection on context exit.
+        with closing(sqlite3.connect(store_path)) as conn:
             tables = {
                 r[0] for r in conn.execute("SELECT name FROM sqlite_master WHERE type='table'")
             }
@@ -71,7 +82,7 @@ def test_erase_case_removes_all_tokens(store_path: str) -> None:
         assert store.reveal(t1) is None
         assert store.reveal(t2) is None
         # case-b's tokens are untouched.
-        with sqlite3.connect(store_path) as conn:
+        with closing(sqlite3.connect(store_path)) as conn:
             row = conn.execute(
                 "SELECT COUNT(*) FROM pii_tokens WHERE case_id = ?", ("case-b",),
             ).fetchone()

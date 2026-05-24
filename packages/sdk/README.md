@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="../../assets/logo-square.png" alt="VouchRail" width="160">
+</p>
+
 # @vouchrail/sdk
 
 The VouchRail integration SDK. Wraps existing LLM SDKs and agent

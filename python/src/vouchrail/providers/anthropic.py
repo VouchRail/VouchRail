@@ -6,6 +6,7 @@ import inspect
 import re
 from typing import Any
 
+from ._shared import extract_output, merge_first_dict_arg, pick_keys
 from .base import PROVIDER_ERROR_RISK_FLAG, ProviderHostLogger, WrapContext
 
 ANTHROPIC_CONFIG_KEYS: tuple[str, ...] = (
@@ -28,16 +29,6 @@ def derive_anthropic_model_version(model: str) -> str:
     return model or "unknown"
 
 
-def _pick_keys(params: dict[str, Any], keys: tuple[str, ...]) -> dict[str, Any]:
-    return {k: params[k] for k in keys if k in params}
-
-
-def _extract_output(response: Any, keys: tuple[str, ...]) -> Any:
-    if isinstance(response, dict):
-        return {k: response.get(k) for k in keys}
-    return response
-
-
 class AnthropicAdapter:
     provider_id = "anthropic"
 
@@ -58,13 +49,7 @@ class AnthropicAdapter:
         original_create = messages.create
 
         def wrapped_create(*args: Any, **kwargs: Any) -> Any:
-            params: dict[str, Any] = dict(kwargs)
-            if args:
-                # Anthropic SDK uses kwargs in practice; positional dict path is
-                # supported here for symmetry with mock clients used in tests.
-                first = args[0]
-                if isinstance(first, dict):
-                    params = {**first, **params}
+            params = merge_first_dict_arg(args, kwargs)
             model = str(params.get("model") or "unknown")
             call_id = audit.start_call(
                 case_id=context.case_id,
@@ -73,7 +58,7 @@ class AnthropicAdapter:
                 model_provider="anthropic",
                 model_name=model,
                 model_version=derive_anthropic_model_version(model),
-                model_configuration=_pick_keys(params, ANTHROPIC_CONFIG_KEYS),
+                model_configuration=pick_keys(params, ANTHROPIC_CONFIG_KEYS),
                 prompt_template_id=context.prompt_template_id,
                 prompt_template_version=context.prompt_template_version,
                 operator_id=context.operator_id,
@@ -81,7 +66,7 @@ class AnthropicAdapter:
             )
             try:
                 response = original_create(*args, **kwargs)
-                output = _extract_output(response, ANTHROPIC_OUTPUT_KEYS)
+                output = extract_output(response, ANTHROPIC_OUTPUT_KEYS)
                 audit.end_call(call_id, output=output, output_decision=output)
                 return response
             except Exception:

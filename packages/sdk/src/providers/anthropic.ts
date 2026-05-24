@@ -1,5 +1,6 @@
 import type { WrapContext } from '../config.js';
 
+import { extractOutput, pickKeys } from './shared.js';
 import {
   PROVIDER_ERROR_RISK_FLAG,
   type ProviderAdapter,
@@ -30,27 +31,6 @@ interface AnthropicClient extends Record<string, unknown> {
 export function deriveAnthropicModelVersion(model: string): string {
   const m = ANTHROPIC_SNAPSHOT_REGEX.exec(model);
   return m ? m[1]! : model || 'unknown';
-}
-
-function pickKeys(
-  params: Record<string, unknown>,
-  keys: readonly string[],
-): Record<string, unknown> {
-  const out: Record<string, unknown> = {};
-  for (const key of keys) {
-    if (key in params) out[key] = params[key];
-  }
-  return out;
-}
-
-function extractOutput(response: unknown, keys: readonly string[]): unknown {
-  if (response && typeof response === 'object') {
-    const r = response as Record<string, unknown>;
-    const out: Record<string, unknown> = {};
-    for (const key of keys) out[key] = r[key];
-    return out;
-  }
-  return response ?? null;
 }
 
 export const anthropicAdapter: ProviderAdapter = {

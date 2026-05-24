@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="../assets/logo-square.png" alt="VouchRail" width="160">
+</p>
+
 # vouchrail (Python)
 
 Python SDK for **VouchRail** — EU AI Act Article 12 tamper-evident audit logs.

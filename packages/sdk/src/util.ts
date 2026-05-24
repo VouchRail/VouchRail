@@ -51,5 +51,3 @@ export function fingerprint(value: unknown): string {
   const canonical = canonicalize(value ?? null);
   return createHash('sha256').update(canonical, 'utf8').digest('hex');
 }
-
-export { SAFE_PATH_SEGMENT };
