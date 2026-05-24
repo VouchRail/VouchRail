@@ -8,12 +8,12 @@ from pathlib import Path
 
 import pytest
 
-from auditlayer import PiiRedactor, SqlitePiiTokenStore
+from vouchrail import PiiRedactor, SqlitePiiTokenStore
 
 
 @pytest.fixture()
 def store_path() -> str:
-    with tempfile.TemporaryDirectory(prefix="auditlayer-sqlite-") as d:
+    with tempfile.TemporaryDirectory(prefix="vouchrail-sqlite-") as d:
         yield str(Path(d) / "pii.sqlite")
 
 

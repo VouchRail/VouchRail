@@ -13,9 +13,9 @@ from typing import Any, TypeVar
 from .defaults import RETENTION_DEFAULTS
 from .errors import (
     ERROR_CODES,
-    AuditLayerConfigError,
-    AuditLayerLifecycleError,
-    AuditLayerSchemaError,
+    VouchRailConfigError,
+    VouchRailLifecycleError,
+    VouchRailSchemaError,
 )
 from .pii.redactor import PiiRedactor
 from .pii.token_store import PiiTokenStore
@@ -73,7 +73,7 @@ class AuditLogger(ProviderHostLogger):
         retention_target_days: int = RETENTION_DEFAULTS.provider_target_days,
     ) -> None:
         if not system_id or not system_id.strip():
-            raise AuditLayerConfigError(
+            raise VouchRailConfigError(
                 ERROR_CODES["CONFIG_MISSING_FIELD"],
                 "AuditLogger: system_id is required",
                 {"field": "system_id"},
@@ -113,7 +113,7 @@ class AuditLogger(ProviderHostLogger):
         reference_database: str | None = None,
     ) -> str:
         if not case_id or not case_id.strip():
-            raise AuditLayerConfigError(
+            raise VouchRailConfigError(
                 ERROR_CODES["CONFIG_MISSING_FIELD"],
                 "start_call: case_id is required",
                 {"field": "case_id"},
@@ -163,7 +163,7 @@ class AuditLogger(ProviderHostLogger):
     ) -> dict[str, Any]:
         pending = self._pending.pop(call_id, None)
         if pending is None:
-            raise AuditLayerLifecycleError(
+            raise VouchRailLifecycleError(
                 ERROR_CODES["LOGGER_CALL_NOT_PENDING"],
                 f"end_call: callId {call_id} is not in the pending set "
                 "(already finalised or never started).",
@@ -336,7 +336,7 @@ class AuditLogger(ProviderHostLogger):
             }
             recheck = compute_entry_hash(recheck_payload)
             if recheck != entry["entryHash"]:
-                raise AuditLayerSchemaError(
+                raise VouchRailSchemaError(
                     ERROR_CODES["SCHEMA_HASH_RECHECK_FAILED"],
                     "AuditLogger: entry hash recheck failed before persistence",
                     {

@@ -13,7 +13,7 @@ import { SCHEMA_VERSION, type AuditLogEntry, type AuditLogEntryInput } from '../
 function makeInput(callId: string, caseId = 'case-1'): AuditLogEntryInput {
   return {
     schemaVersion: SCHEMA_VERSION,
-    recordedBy: '@auditlayer/sdk@0.1.0',
+    recordedBy: '@vouchrail/sdk@0.1.0',
     callId,
     caseId,
     systemId: 'test-system',

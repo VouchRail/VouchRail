@@ -1,7 +1,7 @@
 # Example — AI healthcare triage (Annex III high-risk)
 
 AI triage / pre-screening systems (non-medical-device classification) fall
-under EU AI Act Annex III. This example shows AuditLayer recording every
+under EU AI Act Annex III. This example shows VouchRail recording every
 triage recommendation with:
 
 - Full PII pseudonymization (patient identifiers tokenized at log time;
@@ -20,7 +20,7 @@ pnpm example:health
 ## Verify
 
 ```bash
-pnpm dlx @auditlayer/cli verify \
+pnpm dlx @vouchrail/cli verify \
   --system-id healthcare-triage-example \
   --storage-dir ./audit-logs
 ```

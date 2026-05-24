@@ -11,11 +11,11 @@ import re
 
 import pytest
 
-from auditlayer import SDK_NAME, SDK_VERSION
+from vouchrail import SDK_NAME, SDK_VERSION
 
 
 def test_sdk_name_matches_distribution():
-    assert SDK_NAME == "auditlayer"
+    assert SDK_NAME == "vouchrail"
 
 
 def test_sdk_version_looks_like_semver_or_local_fallback():

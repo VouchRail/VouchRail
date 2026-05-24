@@ -1,10 +1,10 @@
 import {
-  AuditLayerConfigError,
+  VouchRailConfigError,
   ERROR_CODES,
   LocalStorageBackend,
   S3StorageBackend,
   type StorageBackend,
-} from '@auditlayer/sdk';
+} from '@vouchrail/sdk';
 
 import type { CliConfigStorage } from './config.js';
 
@@ -27,7 +27,7 @@ export function createBackend(storage: CliConfigStorage): StorageBackend {
     default: {
       const _exhaustive: never = storage;
       void _exhaustive;
-      throw new AuditLayerConfigError(
+      throw new VouchRailConfigError(
         ERROR_CODES.CONFIG_UNKNOWN_BACKEND,
         'createBackend: unknown storage type',
         { received: storage },

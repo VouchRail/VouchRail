@@ -10,7 +10,7 @@ describe('SqlitePiiTokenStore', () => {
   let dir: string;
   let dbPath: string;
   beforeEach(() => {
-    dir = mkdtempSync(join(tmpdir(), 'auditlayer-sqlite-'));
+    dir = mkdtempSync(join(tmpdir(), 'vouchrail-sqlite-'));
     dbPath = join(dir, 'pii.sqlite');
   });
   afterEach(() => {

@@ -7,20 +7,20 @@
 > filled in by counsel.
 >
 > **Effective Date:** `[to be filled by counsel]`
-> **Governing Entity:** AuditLayer, Inc., a Delaware corporation
-> **Contact:** `legal@auditlayer.io`
+> **Governing Entity:** VouchRail, Inc., a Delaware corporation
+> **Contact:** `legal@vouchrail.com`
 
 ## 1. Acceptance
 
-By accessing or using the AuditLayer Services (the "Service") or installing
-any AuditLayer-distributed software ("Software"), Customer agrees to these
+By accessing or using the VouchRail Services (the "Service") or installing
+any VouchRail-distributed software ("Software"), Customer agrees to these
 Terms of Service. If Customer is entering into these Terms on behalf of an
 entity, Customer represents that Customer has the authority to bind that
 entity.
 
 ## 2. Services
 
-AuditLayer provides software and, optionally, hosted services for recording
+VouchRail provides software and, optionally, hosted services for recording
 audit log entries about AI system operation. Customer is solely responsible
 for determining whether and how the Service is suitable for Customer's
 compliance obligations.
@@ -43,7 +43,7 @@ obligations;
 (e) configuring retention periods, PII redaction policies, signing-key
 custody, and storage immutability settings.
 
-AuditLayer is an infrastructure provider and not a compliance consultancy.
+VouchRail is an infrastructure provider and not a compliance consultancy.
 
 ## 4. Audit Trail Evidentiary Disclaimer _(spec §13.2 Clause 7)_
 
@@ -58,30 +58,30 @@ regulatory proceeding depends on:
 The Software's cryptographic mechanisms (SHA-256 hash chain, JCS
 canonicalization, external signing) provide tools to support evidence
 integrity but do not constitute legal admissibility certification.
-AuditLayer makes no representation that audit logs produced by the Service
+VouchRail makes no representation that audit logs produced by the Service
 will be accepted as evidence in any particular jurisdiction or proceeding.
 
 ## 5. Customer Indemnification _(spec §13.2 Clause 5)_
 
-Customer shall indemnify, defend, and hold harmless AuditLayer against any
+Customer shall indemnify, defend, and hold harmless VouchRail against any
 third-party claims arising from Customer's use of the Service in violation
 of applicable law, including discrimination, privacy, consumer protection,
 or product liability claims by Customer's end users or counterparties.
 
 ## 6. Limitation of Liability _(spec §13.2 Clause 1)_
 
-To the maximum extent permitted by law, AuditLayer's total aggregate
+To the maximum extent permitted by law, VouchRail's total aggregate
 liability arising out of or related to these Terms shall not exceed the
-fees paid by Customer to AuditLayer in the twelve (12) months preceding
+fees paid by Customer to VouchRail in the twelve (12) months preceding
 the event giving rise to the claim.
 
 ## 7. Exclusion of Consequential Damages _(spec §13.2 Clause 2)_
 
-In no event shall AuditLayer be liable for any indirect, incidental,
+In no event shall VouchRail be liable for any indirect, incidental,
 consequential, special, exemplary, or punitive damages, including
 without limitation loss of profits, loss of business, loss of data,
 **regulatory fines (including EU AI Act and GDPR fines)**, or legal costs
-incurred by Customer, even if AuditLayer has been advised of the possibility
+incurred by Customer, even if VouchRail has been advised of the possibility
 of such damages.
 
 ## 8. Warranty Disclaimer _(spec §13.2 Clause 3)_
@@ -89,26 +89,26 @@ of such damages.
 THE SERVICE AND SOFTWARE ARE PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT
 WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
 WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND
-NON-INFRINGEMENT. AUDITLAYER DOES NOT WARRANT THAT THE SERVICE WILL BE
+NON-INFRINGEMENT. VOUCHRAIL DOES NOT WARRANT THAT THE SERVICE WILL BE
 UNINTERRUPTED, ERROR-FREE, OR BUG-FREE.
 
 ## 9. Force Majeure _(spec §13.2 Clause 6)_
 
-AuditLayer shall not be liable for any failure or delay caused by events
+VouchRail shall not be liable for any failure or delay caused by events
 beyond its reasonable control, including acts of nature, war, terrorism,
 pandemic, cyber-attacks on upstream infrastructure providers (including
 AWS, GCP, Azure, and KMS providers), and government actions.
 
 ## 10. Service Modifications _(Appendix D Clause 9)_
 
-AuditLayer may update, modify, or discontinue components of the Service
+VouchRail may update, modify, or discontinue components of the Service
 upon reasonable prior notice. Material breaking changes to the published
 audit log schema will be versioned (`schemaVersion`) and migration tooling
 will be provided.
 
 ## 11. Data Processing _(Appendix D Clause 10)_
 
-Where AuditLayer processes personal data on Customer's behalf in connection
+Where VouchRail processes personal data on Customer's behalf in connection
 with hosted-service tiers, the parties shall execute the Data Processing
 Agreement at `legal/dpa.md` as a separate binding exhibit.
 
@@ -118,7 +118,7 @@ Sections 3 through 10, 13, 14, and 15 survive termination of these Terms.
 
 ## 13. Notices _(Appendix D Clause 12)_
 
-Legal notices to AuditLayer: `legal@auditlayer.io`.
+Legal notices to VouchRail: `legal@vouchrail.com`.
 Legal notices to Customer: the e-mail address on Customer's account, or
 the address designated in the relevant order form.
 

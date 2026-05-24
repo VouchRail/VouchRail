@@ -2,12 +2,12 @@ import { readFile } from 'node:fs/promises';
 import { isAbsolute, resolve } from 'node:path';
 
 import {
-  AuditLayerConfigError,
+  VouchRailConfigError,
   CLI_DEFAULTS,
   ERROR_CODES,
   FileBackedAuditConfigSchema,
   type FileBackedAuditConfig,
-} from '@auditlayer/sdk';
+} from '@vouchrail/sdk';
 
 /**
  * CLI's view of an audit config. We narrow to the file-backed subset (no
@@ -29,7 +29,7 @@ export async function loadConfig(explicitPath?: string): Promise<CliConfig | nul
       const json: unknown = JSON.parse(text);
       const parsed = FileBackedAuditConfigSchema.safeParse(json);
       if (!parsed.success) {
-        throw new AuditLayerConfigError(
+        throw new VouchRailConfigError(
           ERROR_CODES.CONFIG_INVALID,
           `${p}: config does not match schema: ${parsed.error.issues
             .map((i) => `${i.path.join('.') || '(root)'}: ${i.message}`)
@@ -40,8 +40,8 @@ export async function loadConfig(explicitPath?: string): Promise<CliConfig | nul
       return parsed.data;
     } catch (err) {
       if ((err as NodeJS.ErrnoException).code === 'ENOENT') continue;
-      if (err instanceof AuditLayerConfigError) throw err;
-      throw new AuditLayerConfigError(
+      if (err instanceof VouchRailConfigError) throw err;
+      throw new VouchRailConfigError(
         ERROR_CODES.CONFIG_INVALID,
         `Failed to read config ${p}: ${(err as Error).message}`,
         { path: p },
@@ -57,7 +57,7 @@ function resolveConfigPath(candidate: string, explicit: boolean): string {
   // explicit paths containing ".." segments to discourage casual traversal.
   if (!explicit) return resolve(process.cwd(), candidate);
   if (candidate.split(/[/\\]/).includes('..')) {
-    throw new AuditLayerConfigError(
+    throw new VouchRailConfigError(
       ERROR_CODES.CONFIG_INVALID,
       `--config must not contain '..' segments (got ${JSON.stringify(candidate)})`,
       { received: candidate },
@@ -77,9 +77,9 @@ export interface ConfigOverrides {
 export function resolveConfig(config: CliConfig | null, overrides: ConfigOverrides): CliConfig {
   const systemId = overrides.systemId ?? config?.systemId;
   if (!systemId) {
-    throw new AuditLayerConfigError(
+    throw new VouchRailConfigError(
       ERROR_CODES.CONFIG_MISSING_FIELD,
-      'systemId is required. Set it in auditlayer.config.json or pass --system-id.',
+      'systemId is required. Set it in vouchrail.config.json or pass --system-id.',
       { field: 'systemId' },
     );
   }
@@ -94,7 +94,7 @@ export function resolveConfig(config: CliConfig | null, overrides: ConfigOverrid
       prefix: overrides.s3Prefix ?? existingS3?.prefix,
     };
     if (!merged.bucket || !merged.region) {
-      throw new AuditLayerConfigError(
+      throw new VouchRailConfigError(
         ERROR_CODES.CONFIG_MISSING_FIELD,
         'S3 storage requires both --s3-bucket and --s3-region (or in config).',
         { field: 's3.bucket|s3.region' },
@@ -105,7 +105,7 @@ export function resolveConfig(config: CliConfig | null, overrides: ConfigOverrid
     storage = { type: 'local', dir: overrides.storageDir };
   }
   if (!storage) {
-    throw new AuditLayerConfigError(
+    throw new VouchRailConfigError(
       ERROR_CODES.CONFIG_MISSING_FIELD,
       'storage is required. Configure it or pass --storage-dir / --s3-bucket.',
       { field: 'storage' },

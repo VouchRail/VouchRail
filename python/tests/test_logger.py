@@ -7,11 +7,11 @@ from pathlib import Path
 
 import pytest
 
-from auditlayer import (
+from vouchrail import (
     ERROR_CODES,
-    AuditLayerConfigError,
-    AuditLayerLifecycleError,
-    AuditLayerProviderError,
+    VouchRailConfigError,
+    VouchRailLifecycleError,
+    VouchRailProviderError,
     AuditLogger,
     InlineSigner,
     InMemoryPiiTokenStore,
@@ -49,7 +49,7 @@ def _make_logger(dir_: str, *, with_pii: bool = False) -> AuditLogger:
 
 @pytest.fixture()
 def tmp_audit_dir() -> str:
-    with tempfile.TemporaryDirectory(prefix="auditlayer-test-") as d:
+    with tempfile.TemporaryDirectory(prefix="vouchrail-test-") as d:
         yield d
 
 
@@ -118,14 +118,14 @@ def test_pii_redaction_records_pseudonym_fields(tmp_audit_dir: str) -> None:
 
 def test_end_call_unknown_id_raises_lifecycle_error(tmp_audit_dir: str) -> None:
     audit = _make_logger(tmp_audit_dir)
-    with pytest.raises(AuditLayerLifecycleError) as exc:
+    with pytest.raises(VouchRailLifecycleError) as exc:
         audit.end_call("nonexistent", output_decision={"x": 1})
     assert exc.value.code == ERROR_CODES["LOGGER_CALL_NOT_PENDING"]
     audit.close()
 
 
 def test_empty_system_id_rejected() -> None:
-    with pytest.raises(AuditLayerConfigError) as exc:
+    with pytest.raises(VouchRailConfigError) as exc:
         AuditLogger(
             system_id="",
             storage=LocalStorageBackend(dir="/tmp/never"),
@@ -135,7 +135,7 @@ def test_empty_system_id_rejected() -> None:
 
 
 def test_path_traversal_system_id_rejected() -> None:
-    with pytest.raises(AuditLayerConfigError) as exc:
+    with pytest.raises(VouchRailConfigError) as exc:
         AuditLogger(
             system_id="../escape",
             storage=LocalStorageBackend(dir="/tmp/never"),
@@ -146,7 +146,7 @@ def test_path_traversal_system_id_rejected() -> None:
 
 def test_wrap_unsupported_client_raises_provider_error(tmp_audit_dir: str) -> None:
     audit = _make_logger(tmp_audit_dir)
-    with pytest.raises(AuditLayerProviderError) as exc:
+    with pytest.raises(VouchRailProviderError) as exc:
         audit.wrap(
             object(),
             WrapContext(
@@ -280,7 +280,7 @@ def test_tamper_detection(tmp_audit_dir: str) -> None:
 
     backend = LocalStorageBackend(dir=tmp_audit_dir)
     entries = list(
-        backend.list(__import__("auditlayer").storage.base.QueryOptions(system_id="sys-test")),
+        backend.list(__import__("vouchrail").storage.base.QueryOptions(system_id="sys-test")),
     )
     result = verify_chain(entries)
     assert result.valid is False

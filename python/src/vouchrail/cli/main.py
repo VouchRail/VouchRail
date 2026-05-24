@@ -1,14 +1,14 @@
-"""AuditLayer Python CLI — parity with packages/cli (TS).
+"""VouchRail Python CLI — parity with packages/cli (TS).
 
 Commands:
 
-    auditlayer init    --output PATH
-    auditlayer query   --case-id ID [--from ISO] [--to ISO] [--json]
-    auditlayer verify  [--from ISO] [--to ISO] [--case-id ID] [--json]
-    auditlayer export  [--case-id ID] [--from ISO] [--to ISO] [--output PATH]
+    vouchrail init    --output PATH
+    vouchrail query   --case-id ID [--from ISO] [--to ISO] [--json]
+    vouchrail verify  [--from ISO] [--to ISO] [--case-id ID] [--json]
+    vouchrail export  [--case-id ID] [--from ISO] [--to ISO] [--output PATH]
 
 Storage / systemId can be passed via flags or via an
-``auditlayer.config.json`` file in the current working directory.
+``vouchrail.config.json`` file in the current working directory.
 """
 
 from __future__ import annotations
@@ -21,7 +21,7 @@ from pathlib import Path
 from typing import Any
 
 from ..defaults import CLI_DEFAULTS
-from ..errors import ERROR_CODES, AuditLayerConfigError, AuditLayerSchemaError
+from ..errors import ERROR_CODES, VouchRailConfigError, VouchRailSchemaError
 from ..schema.hash_chain import verify_chain
 from ..storage.base import QueryOptions
 from ..storage.local_fs import LocalStorageBackend
@@ -41,7 +41,7 @@ def _load_config_file(explicit_path: str | None, cwd: Path) -> CliConfig | None:
     candidates: list[Path]
     if explicit_path is not None:
         if ".." in Path(explicit_path).parts:
-            raise AuditLayerConfigError(
+            raise VouchRailConfigError(
                 ERROR_CODES["CONFIG_INVALID"],
                 f"--config must not contain '..' segments (got {explicit_path!r})",
                 {"received": explicit_path},
@@ -56,7 +56,7 @@ def _load_config_file(explicit_path: str | None, cwd: Path) -> CliConfig | None:
         try:
             data = json.loads(path.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError) as exc:
-            raise AuditLayerConfigError(
+            raise VouchRailConfigError(
                 ERROR_CODES["CONFIG_INVALID"],
                 f"Failed to read config {path}: {exc}",
                 {"path": str(path)},
@@ -67,19 +67,19 @@ def _load_config_file(explicit_path: str | None, cwd: Path) -> CliConfig | None:
 
 def _parse_config(raw: Any, path: Path) -> CliConfig:
     if not isinstance(raw, dict):
-        raise AuditLayerConfigError(
+        raise VouchRailConfigError(
             ERROR_CODES["CONFIG_INVALID"], f"{path}: config root must be an object", {},
         )
     system_id = raw.get("systemId")
     if not isinstance(system_id, str) or not system_id:
-        raise AuditLayerConfigError(
+        raise VouchRailConfigError(
             ERROR_CODES["CONFIG_MISSING_FIELD"],
             f"{path}: systemId is required",
             {"field": "systemId"},
         )
     storage = raw.get("storage")
     if not isinstance(storage, dict):
-        raise AuditLayerConfigError(
+        raise VouchRailConfigError(
             ERROR_CODES["CONFIG_MISSING_FIELD"],
             f"{path}: storage is required",
             {"field": "storage"},
@@ -88,13 +88,13 @@ def _parse_config(raw: Any, path: Path) -> CliConfig:
     if stype == "local":
         dir_ = storage.get("dir")
         if not isinstance(dir_, str) or not dir_:
-            raise AuditLayerConfigError(
+            raise VouchRailConfigError(
                 ERROR_CODES["CONFIG_MISSING_FIELD"],
                 f"{path}: storage.dir is required for local backend",
                 {"field": "storage.dir"},
             )
         return CliConfig(system_id=system_id, storage_type="local", dir=dir_)
-    raise AuditLayerConfigError(
+    raise VouchRailConfigError(
         ERROR_CODES["CONFIG_UNKNOWN_BACKEND"],
         f"{path}: storage.type must be 'local' (S3 backend in Python CLI ships later)",
         {"received": stype},
@@ -105,14 +105,14 @@ def _resolve_config(args: argparse.Namespace, cwd: Path) -> CliConfig:
     file_cfg = _load_config_file(args.config, cwd)
     system_id = args.system_id or (file_cfg.system_id if file_cfg else None)
     if not system_id:
-        raise AuditLayerConfigError(
+        raise VouchRailConfigError(
             ERROR_CODES["CONFIG_MISSING_FIELD"],
-            "systemId is required. Set it in auditlayer.config.json or pass --system-id.",
+            "systemId is required. Set it in vouchrail.config.json or pass --system-id.",
             {"field": "systemId"},
         )
     storage_dir = args.storage_dir or (file_cfg.dir if file_cfg else None)
     if not storage_dir:
-        raise AuditLayerConfigError(
+        raise VouchRailConfigError(
             ERROR_CODES["CONFIG_MISSING_FIELD"],
             "storage is required. Configure it or pass --storage-dir.",
             {"field": "storage"},
@@ -131,7 +131,7 @@ def _validate_iso(value: str | None, label: str) -> None:
 
         datetime.fromisoformat(value.replace("Z", "+00:00"))
     except ValueError as exc:
-        raise AuditLayerSchemaError(
+        raise VouchRailSchemaError(
             ERROR_CODES["SCHEMA_INVALID_TIMESTAMP"],
             f"{label} must be an ISO-8601 timestamp (got {value!r})",
             {"label": label, "value": value},
@@ -142,7 +142,7 @@ def _validate_range(from_: str | None, to: str | None) -> None:
     _validate_iso(from_, "--from")
     _validate_iso(to, "--to")
     if from_ and to and from_ > to:
-        raise AuditLayerConfigError(
+        raise VouchRailConfigError(
             ERROR_CODES["CONFIG_INVALID"],
             f"--from ({from_}) must not be after --to ({to}).",
             {"from": from_, "to": to},
@@ -280,9 +280,9 @@ def _cmd_export(args: argparse.Namespace, cwd: Path) -> int:
 
 def _build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
-        prog="auditlayer",
+        prog="vouchrail",
         description=(
-            "AuditLayer Python CLI — query, verify, and export hash-chained audit "
+            "VouchRail Python CLI — query, verify, and export hash-chained audit "
             "logs for EU AI Act Article 12."
         ),
     )
@@ -292,7 +292,7 @@ def _build_parser() -> argparse.ArgumentParser:
     p.add_argument("--json", dest="json_output", action="store_true", help="emit JSON")
     sub = p.add_subparsers(dest="command", required=True)
 
-    init = sub.add_parser("init", help="Write a starter auditlayer.config.json")
+    init = sub.add_parser("init", help="Write a starter vouchrail.config.json")
     init.add_argument("--output", help="output path")
     init.add_argument("--force", action="store_true", help="overwrite existing file")
     init.set_defaults(_fn=_cmd_init)
@@ -325,8 +325,8 @@ def main(argv: list[str] | None = None, *, cwd: Path | None = None) -> int:
     base_cwd = cwd or Path.cwd()
     try:
         return int(args._fn(args, base_cwd))
-    except (AuditLayerConfigError, AuditLayerSchemaError) as exc:
-        sys.stderr.write(f"auditlayer: {exc}\n")
+    except (VouchRailConfigError, VouchRailSchemaError) as exc:
+        sys.stderr.write(f"vouchrail: {exc}\n")
         return 1
 
 

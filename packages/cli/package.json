@@ -1,17 +1,17 @@
 {
-  "name": "@auditlayer/cli",
+  "name": "@vouchrail/cli",
   "version": "0.1.0",
-  "description": "AuditLayer CLI — query, verify, and export hash-chained audit logs. Verification works offline (no AuditLayer cloud required).",
+  "description": "VouchRail CLI — query, verify, and export hash-chained audit logs. Verification works offline (no VouchRail cloud required).",
   "license": "Apache-2.0",
-  "author": "AuditLayer Contributors",
-  "homepage": "https://github.com/jeffry1829/AuditLayer/tree/main/packages/cli",
+  "author": "VouchRail Contributors",
+  "homepage": "https://github.com/vouchrail/vouchrail/tree/main/packages/cli",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jeffry1829/AuditLayer.git",
+    "url": "https://github.com/vouchrail/vouchrail.git",
     "directory": "packages/cli"
   },
   "bugs": {
-    "url": "https://github.com/jeffry1829/AuditLayer/issues"
+    "url": "https://github.com/vouchrail/vouchrail/issues"
   },
   "keywords": [
     "eu-ai-act",
@@ -25,7 +25,7 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "bin": {
-    "auditlayer": "./dist/bin.js"
+    "vouchrail": "./dist/bin.js"
   },
   "files": [
     "dist",
@@ -49,8 +49,8 @@
     "lint": "eslint \"src/**/*.ts\""
   },
   "dependencies": {
-    "@auditlayer/schema": "workspace:^",
-    "@auditlayer/sdk": "workspace:^",
+    "@vouchrail/schema": "workspace:^",
+    "@vouchrail/sdk": "workspace:^",
     "commander": "^12.1.0"
   },
   "devDependencies": {

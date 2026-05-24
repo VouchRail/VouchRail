@@ -34,7 +34,7 @@
 - [ ] No comparison claims about competitor accuracy without published data
 - [ ] No customer logos without written permission
 - [ ] No claims about specific customer regulatory outcomes ("Klarna passed
-      audit using AuditLayer") without customer's written approval
+      audit using VouchRail") without customer's written approval
 - [ ] All performance numbers cited with the test methodology in a footnote
 - [ ] All deadline / penalty references cite the regulation text
 

@@ -5,7 +5,7 @@ from __future__ import annotations
 import pytest
 from pydantic import ValidationError
 
-from auditlayer.schema.types import (
+from vouchrail.schema.types import (
     SCHEMA_VERSION,
     AuditLogEntryInput,
     HumanReview,
@@ -14,7 +14,7 @@ from auditlayer.schema.types import (
 
 GOOD = {
     "schemaVersion": SCHEMA_VERSION,
-    "recordedBy": "auditlayer@0.1.0",
+    "recordedBy": "vouchrail@0.1.0",
     "callId": "00000000-0000-4000-8000-000000000001",
     "caseId": "case-1",
     "systemId": "sys-1",

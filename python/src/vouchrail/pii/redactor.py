@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from typing import Any, Literal
 
 from ..defaults import PII_DEFAULTS
-from ..errors import ERROR_CODES, AuditLayerPiiError
+from ..errors import ERROR_CODES, VouchRailPiiError
 from ..pii_patterns import ALL_PII_PATTERN_NAMES, DEFAULT_ENABLED_PII_PATTERNS, PII_PATTERN_REGISTRY
 from .token_store import PiiTokenStore
 
@@ -53,8 +53,18 @@ def detect_pii(
         for name, regex in custom_patterns.items():
             for m in regex.finditer(text):
                 out.append(_Match(pattern_name=name, match=m.group(0), index=m.start()))
-    out.sort(key=lambda m: m.index)
-    return out
+    # Sort by index, then descending length so the longest wins on ties.
+    out.sort(key=lambda m: (m.index, -len(m.match)))
+    # Drop overlaps: replacement walks backwards over span ranges, so any
+    # intersection between matches corrupts the output string.
+    deduped: list[_Match] = []
+    last_end = -1
+    for m in out:
+        if m.index < last_end:
+            continue
+        deduped.append(m)
+        last_end = m.index + len(m.match)
+    return deduped
 
 
 class PiiRedactor:
@@ -82,7 +92,7 @@ class PiiRedactor:
         self._custom_patterns: Mapping[str, re.Pattern[str]] = custom_patterns or {}
         self._token_store = token_store
         if enabled and strategy == "pseudonymize" and token_store is None:
-            raise AuditLayerPiiError(
+            raise VouchRailPiiError(
                 ERROR_CODES["PII_TOKEN_STORE_MISSING"],
                 "PiiRedactor: pseudonymize strategy requires a token store. "
                 "Configure piiRedaction.tokenStore.",

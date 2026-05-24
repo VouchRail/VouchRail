@@ -1,17 +1,17 @@
 {
-  "name": "@auditlayer/schema",
+  "name": "@vouchrail/schema",
   "version": "0.1.0",
-  "description": "AuditLayer audit log schema, Zod validators, JCS canonicalization, and SHA-256 hash chain helpers. Designed to support EU AI Act Article 12 record-keeping.",
+  "description": "VouchRail audit log schema, Zod validators, JCS canonicalization, and SHA-256 hash chain helpers. Designed to support EU AI Act Article 12 record-keeping.",
   "license": "Apache-2.0",
-  "author": "AuditLayer Contributors",
-  "homepage": "https://github.com/jeffry1829/AuditLayer/tree/main/packages/schema",
+  "author": "VouchRail Contributors",
+  "homepage": "https://github.com/vouchrail/vouchrail/tree/main/packages/schema",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jeffry1829/AuditLayer.git",
+    "url": "https://github.com/vouchrail/vouchrail.git",
     "directory": "packages/schema"
   },
   "bugs": {
-    "url": "https://github.com/jeffry1829/AuditLayer/issues"
+    "url": "https://github.com/vouchrail/vouchrail/issues"
   },
   "keywords": [
     "eu-ai-act",

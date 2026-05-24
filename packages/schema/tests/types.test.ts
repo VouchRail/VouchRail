@@ -11,7 +11,7 @@ import {
 function baseInput() {
   return {
     schemaVersion: SCHEMA_VERSION,
-    recordedBy: '@auditlayer/sdk@0.1.0',
+    recordedBy: '@vouchrail/sdk@0.1.0',
     callId: 'call-1',
     caseId: 'case-1',
     systemId: 'sys-1',

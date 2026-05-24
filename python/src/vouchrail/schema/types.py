@@ -16,8 +16,8 @@ from typing import Any, Literal
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic.alias_generators import to_camel
 
-SCHEMA_VERSION: Literal["auditlayer-v1.0"] = "auditlayer-v1.0"
-SDK_NAME: str = "auditlayer"
+SCHEMA_VERSION: Literal["vouchrail-v1.0"] = "vouchrail-v1.0"
+SDK_NAME: str = "vouchrail"
 # Read from installed-package metadata so SDK_VERSION stays in lockstep with
 # pyproject.toml without parsing the file at import time. Mirrors the TS SDK's
 # `packages/sdk/src/version.ts` strategy. Falls back to a "0+local" sentinel
@@ -77,7 +77,7 @@ class _PiiRedacted(_Strict):
 class AuditLogEntryInput(_Strict):
     """User-supplied fields. Chain layer adds entryHash/previousEntryHash/signature."""
 
-    schema_version: Literal["auditlayer-v1.0"] = SCHEMA_VERSION
+    schema_version: Literal["vouchrail-v1.0"] = SCHEMA_VERSION
     recorded_by: str = Field(min_length=1)
 
     call_id: str = Field(min_length=1)

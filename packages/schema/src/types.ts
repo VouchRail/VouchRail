@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const SCHEMA_VERSION = 'auditlayer-v1.0' as const;
+export const SCHEMA_VERSION = 'vouchrail-v1.0' as const;
 
 // ISO-8601 UTC with explicit second range 00-59 (no leap-seconds; Date.parse rejects 60).
 const ISO_DATETIME_REGEX =

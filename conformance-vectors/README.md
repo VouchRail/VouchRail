@@ -1,4 +1,4 @@
-# AuditLayer Cross-Language Conformance Vectors
+# VouchRail Cross-Language Conformance Vectors
 
 Per spec §3.3 (cross-language hash compatibility), this directory carries
 JSON test vectors that both the TypeScript SDK and the Python SDK MUST

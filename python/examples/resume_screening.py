@@ -8,11 +8,11 @@ Run locally:
 
 Then verify the chain with either CLI:
 
-    auditlayer --system-id resume-screener-py \
+    vouchrail --system-id resume-screener-py \
                --storage-dir python/examples/audit-logs verify
 
     # or the TypeScript CLI; same chain semantics
-    npx @auditlayer/cli --system-id resume-screener-py \
+    npx @vouchrail/cli --system-id resume-screener-py \
         --storage-dir python/examples/audit-logs verify
 """
 
@@ -25,7 +25,7 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
-from auditlayer import (
+from vouchrail import (
     AuditLogger,
     InlineSigner,
     InMemoryPiiTokenStore,
@@ -197,7 +197,7 @@ def main() -> int:
     audit.close()
     print(f"\nAudit logs written to: {AUDIT_DIR}")
     print(
-        f"Run: auditlayer --system-id resume-screener-py "
+        f"Run: vouchrail --system-id resume-screener-py "
         f"--storage-dir {AUDIT_DIR} verify",
     )
     return 0

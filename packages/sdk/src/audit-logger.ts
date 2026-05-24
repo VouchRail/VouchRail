@@ -5,16 +5,16 @@ import {
   linkEntry,
   type AuditLogEntry,
   type AuditLogEntryInput,
-} from '@auditlayer/schema';
+} from '@vouchrail/schema';
 
 import { LocalStorageBackend } from './backends/local.js';
 import { S3StorageBackend } from './backends/s3.js';
 import type { StorageBackend } from './backends/types.js';
 import type { AuditLoggerConfig, EndCallInput, StartCallInput, WrapContext } from './config.js';
 import {
-  AuditLayerConfigError,
-  AuditLayerLifecycleError,
-  AuditLayerSchemaError,
+  VouchRailConfigError,
+  VouchRailLifecycleError,
+  VouchRailSchemaError,
   ERROR_CODES,
 } from './errors.js';
 import { InMemoryPiiTokenStore, PiiRedactor, SqlitePiiTokenStore } from './pii.js';
@@ -55,7 +55,7 @@ export class AuditLogger {
 
   constructor(config: AuditLoggerConfig) {
     if (!config.systemId || !config.systemId.trim()) {
-      throw new AuditLayerConfigError(
+      throw new VouchRailConfigError(
         ERROR_CODES.CONFIG_MISSING_FIELD,
         'AuditLogger: systemId is required',
         { field: 'systemId' },
@@ -71,7 +71,7 @@ export class AuditLogger {
 
   async startCall(input: StartCallInput): Promise<string> {
     if (!input.caseId || !input.caseId.trim()) {
-      throw new AuditLayerConfigError(
+      throw new VouchRailConfigError(
         ERROR_CODES.CONFIG_MISSING_FIELD,
         'startCall: caseId is required',
         { field: 'caseId' },
@@ -112,7 +112,7 @@ export class AuditLogger {
   async endCall(callId: string, end: EndCallInput): Promise<AuditLogEntry> {
     const pending = this.pending.get(callId);
     if (!pending) {
-      throw new AuditLayerLifecycleError(
+      throw new VouchRailLifecycleError(
         ERROR_CODES.LOGGER_CALL_NOT_PENDING,
         `endCall: callId ${callId} is not in the pending set (already finalised or never started).`,
         { callId },
@@ -159,7 +159,7 @@ export class AuditLogger {
   /**
    * Wrap a third-party SDK client. Provider is detected via the provider
    * registry — see `packages/sdk/src/providers/`. Throws
-   * `AuditLayerProviderError` if no registered adapter recognises the client.
+   * `VouchRailProviderError` if no registered adapter recognises the client.
    */
   wrap<T extends object>(client: T, context: WrapContext): T {
     return wrapClient(this, client, context);
@@ -180,7 +180,7 @@ export class AuditLogger {
       void _sig;
       const recheck = computeEntryHash(hashed);
       if (recheck !== entry.entryHash) {
-        throw new AuditLayerSchemaError(
+        throw new VouchRailSchemaError(
           ERROR_CODES.SCHEMA_HASH_RECHECK_FAILED,
           'AuditLogger: entry hash recheck failed before persistence',
           { callId: entry.callId, expected: entry.entryHash, computed: recheck },
@@ -212,9 +212,7 @@ export class AuditLogger {
   /** Close storage and pii resources. */
   async close(): Promise<void> {
     await this.backend.close?.();
-    if (this.piiTokenStore && 'close' in this.piiTokenStore) {
-      await (this.piiTokenStore as { close?: () => Promise<void> | void }).close?.();
-    }
+    await this.piiTokenStore?.close?.();
   }
 }
 
@@ -227,7 +225,7 @@ function createBackend(config: AuditLoggerConfig): StorageBackend {
     default: {
       const _exhaustive: never = config.storage;
       void _exhaustive;
-      throw new AuditLayerConfigError(
+      throw new VouchRailConfigError(
         ERROR_CODES.CONFIG_UNKNOWN_BACKEND,
         'AuditLogger: unknown storage backend',
         { received: config.storage },
@@ -248,7 +246,7 @@ function createPiiTokenStore(config: AuditLoggerConfig): PiiTokenStore | null {
     default: {
       const _exhaustive: never = store;
       void _exhaustive;
-      throw new AuditLayerConfigError(
+      throw new VouchRailConfigError(
         ERROR_CODES.CONFIG_UNKNOWN_STORE,
         'AuditLogger: unknown pii token store type',
         { received: store },

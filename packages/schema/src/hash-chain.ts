@@ -7,12 +7,12 @@ export const HASH_ALGORITHM = 'sha256' as const;
 
 /**
  * The hash assigned to `previousEntryHash` for the first (genesis) entry of a
- * chain. We use the SHA-256 of the ASCII string "auditlayer:genesis-v1" so
+ * chain. We use the SHA-256 of the ASCII string "vouchrail:genesis-v1" so
  * that the constant is stable across all installations and recognisable in
  * verification tooling.
  */
 export const GENESIS_PREVIOUS_HASH = createHash('sha256')
-  .update('auditlayer:genesis-v1', 'utf8')
+  .update('vouchrail:genesis-v1', 'utf8')
   .digest('hex');
 
 /**

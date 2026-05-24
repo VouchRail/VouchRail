@@ -2,8 +2,8 @@
   "name": "audit-entry-input",
   "description": "Realistic AuditLogEntryInput shape — full Article 12 record",
   "input": {
-    "schemaVersion": "auditlayer-v1.0",
-    "recordedBy": "@auditlayer/sdk@0.1.0",
+    "schemaVersion": "vouchrail-v1.0",
+    "recordedBy": "@vouchrail/sdk@0.1.0",
     "callId": "00000000-0000-4000-8000-000000000001",
     "caseId": "case-conformance",
     "systemId": "sys-conformance",
@@ -25,9 +25,11 @@
     "outputDecision": {
       "ok": true
     },
-    "reasonCodes": ["OK"],
+    "reasonCodes": [
+      "OK"
+    ],
     "operatorId": "op-1"
   },
-  "canonical": "{\"callId\":\"00000000-0000-4000-8000-000000000001\",\"caseId\":\"case-conformance\",\"durationMs\":250,\"endedAt\":\"2026-05-20T12:00:00.250Z\",\"inputFingerprint\":\"0000000000000000000000000000000000000000000000000000000000000002\",\"modelConfiguration\":{\"maxTokens\":256,\"temperature\":0.1},\"modelName\":\"claude-3-5-sonnet-20241022\",\"modelProvider\":\"anthropic\",\"modelVersion\":\"20241022\",\"operatorId\":\"op-1\",\"outputDecision\":{\"ok\":true},\"outputFingerprint\":\"0000000000000000000000000000000000000000000000000000000000000003\",\"promptFingerprint\":\"0000000000000000000000000000000000000000000000000000000000000001\",\"promptTemplateId\":\"tmpl-1\",\"promptTemplateVersion\":\"1.0.0\",\"reasonCodes\":[\"OK\"],\"recordedBy\":\"@auditlayer/sdk@0.1.0\",\"schemaVersion\":\"auditlayer-v1.0\",\"startedAt\":\"2026-05-20T12:00:00.000Z\",\"systemId\":\"sys-conformance\"}",
-  "sha256": "ca7475e416c1151309990aa51a69418a75368d2dc72b2a5ba13d00f40d67ef12"
+  "canonical": "{\"callId\":\"00000000-0000-4000-8000-000000000001\",\"caseId\":\"case-conformance\",\"durationMs\":250,\"endedAt\":\"2026-05-20T12:00:00.250Z\",\"inputFingerprint\":\"0000000000000000000000000000000000000000000000000000000000000002\",\"modelConfiguration\":{\"maxTokens\":256,\"temperature\":0.1},\"modelName\":\"claude-3-5-sonnet-20241022\",\"modelProvider\":\"anthropic\",\"modelVersion\":\"20241022\",\"operatorId\":\"op-1\",\"outputDecision\":{\"ok\":true},\"outputFingerprint\":\"0000000000000000000000000000000000000000000000000000000000000003\",\"promptFingerprint\":\"0000000000000000000000000000000000000000000000000000000000000001\",\"promptTemplateId\":\"tmpl-1\",\"promptTemplateVersion\":\"1.0.0\",\"reasonCodes\":[\"OK\"],\"recordedBy\":\"@vouchrail/sdk@0.1.0\",\"schemaVersion\":\"vouchrail-v1.0\",\"startedAt\":\"2026-05-20T12:00:00.000Z\",\"systemId\":\"sys-conformance\"}",
+  "sha256": "f4455080dbd81fedab7d8c639fedfa3f5fc731f2ad1af5d5e57d5496fe2165d9"
 }

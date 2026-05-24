@@ -13,9 +13,9 @@ export interface RunOptions {
 export function buildProgram(runOpts: RunOptions = {}): Command {
   const program = new Command();
   program
-    .name('auditlayer')
+    .name('vouchrail')
     .description(
-      'AuditLayer CLI — query, verify, and export hash-chained audit logs for EU AI Act Article 12.',
+      'VouchRail CLI — query, verify, and export hash-chained audit logs for EU AI Act Article 12.',
     )
     .version(CLI_VERSION, '-v, --version')
     .addOption(new Option('--config <path>', 'config file path'))
@@ -32,8 +32,8 @@ export function buildProgram(runOpts: RunOptions = {}): Command {
 
   program
     .command('init')
-    .description('Write a starter auditlayer.config.json')
-    .option('--output <path>', 'output path', 'auditlayer.config.json')
+    .description('Write a starter vouchrail.config.json')
+    .option('--output <path>', 'output path', 'vouchrail.config.json')
     .option('--force', 'overwrite existing file', false)
     .action(async (opts: { output: string; force: boolean }) => {
       const code = await initCommand(
@@ -121,7 +121,7 @@ export async function runCli(opts: RunOptions = {}): Promise<number> {
     const code = process.exitCode;
     return typeof code === 'number' ? code : 0;
   } catch (err) {
-    process.stderr.write(`auditlayer: ${(err as Error).message}\n`);
+    process.stderr.write(`vouchrail: ${(err as Error).message}\n`);
     return 1;
   }
 }

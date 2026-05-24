@@ -1,17 +1,17 @@
 {
-  "name": "auditlayer-monorepo",
+  "name": "vouchrail-monorepo",
   "version": "0.1.0",
   "private": true,
-  "description": "AuditLayer — EU AI Act Article 12 audit log infrastructure (monorepo root).",
+  "description": "VouchRail — EU AI Act Article 12 audit log infrastructure (monorepo root).",
   "license": "Apache-2.0",
   "author": "jeffry1829 <jeffry1829@gmail.com>",
-  "homepage": "https://github.com/jeffry1829/AuditLayer",
+  "homepage": "https://github.com/vouchrail/vouchrail",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jeffry1829/AuditLayer.git"
+    "url": "https://github.com/vouchrail/vouchrail.git"
   },
   "bugs": {
-    "url": "https://github.com/jeffry1829/AuditLayer/issues"
+    "url": "https://github.com/vouchrail/vouchrail/issues"
   },
   "engines": {
     "node": ">=18.18"
@@ -26,9 +26,9 @@
     "clean": "pnpm -r run clean && rm -rf node_modules",
     "format": "prettier --write \"**/*.{ts,tsx,js,json,md,yml,yaml}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,json,md,yml,yaml}\"",
-    "example:resume": "pnpm --filter @auditlayer/example-resume-screening start",
-    "example:credit": "pnpm --filter @auditlayer/example-credit-decision start",
-    "example:health": "pnpm --filter @auditlayer/example-healthcare-triage start"
+    "example:resume": "pnpm --filter @vouchrail/example-resume-screening start",
+    "example:credit": "pnpm --filter @vouchrail/example-credit-decision start",
+    "example:health": "pnpm --filter @vouchrail/example-healthcare-triage start"
   },
   "devDependencies": {
     "@types/node": "^20.14.0",

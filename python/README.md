@@ -1,25 +1,25 @@
-# auditlayer (Python)
+# vouchrail (Python)
 
-Python SDK for **AuditLayer** — EU AI Act Article 12 tamper-evident audit logs.
+Python SDK for **VouchRail** — EU AI Act Article 12 tamper-evident audit logs.
 
 Cross-language hash compatibility: a TypeScript service and a Python service interleave entries in the same hash chain, and either CLI verifies the result with byte-identical SHA-256 output.
 
 ```
 # Python writes a chain, TypeScript CLI verifies
 python examples/resume_screening.py
-npx @auditlayer/cli verify --system-id <id> --storage-dir <dir>
+npx @vouchrail/cli verify --system-id <id> --storage-dir <dir>
 > ✔ Chain valid. 3 entries verified.
 
 # TypeScript writes a chain, Python CLI verifies
 node packages/cli/dist/bin.js ...
-auditlayer --system-id <id> --storage-dir <dir> verify
+vouchrail --system-id <id> --storage-dir <dir> verify
 > OK Chain valid. 3 entries verified.
 ```
 
 ## Install
 
 ```bash
-pip install auditlayer
+pip install vouchrail
 # or for development
 pip install -e ".[dev]"
 ```
@@ -29,7 +29,7 @@ pip install -e ".[dev]"
 ```python
 import os
 from anthropic import Anthropic
-from auditlayer import AuditLogger, InlineSigner, LocalStorageBackend, WrapContext
+from vouchrail import AuditLogger, InlineSigner, LocalStorageBackend, WrapContext
 
 audit = AuditLogger(
     system_id="hireflow-resume-screener",
@@ -53,7 +53,7 @@ audit.close()
 Verify the chain (offline):
 
 ```bash
-auditlayer --system-id hireflow-resume-screener --storage-dir ./audit-logs verify
+vouchrail --system-id hireflow-resume-screener --storage-dir ./audit-logs verify
 # OK Chain valid. N entries verified.
 ```
 
@@ -66,7 +66,7 @@ anthropic = audit.wrap_async(AsyncAnthropic(), ctx)
 await anthropic.messages.create(...)
 ```
 
-`wrap` and `wrap_async` are kept distinct — passing an `AsyncAnthropic` to `wrap()` (or a sync `Anthropic` to `wrap_async()`) raises `AuditLayerProviderError(PROVIDER_UNSUPPORTED_CLIENT)` rather than silently producing broken entries.
+`wrap` and `wrap_async` are kept distinct — passing an `AsyncAnthropic` to `wrap()` (or a sync `Anthropic` to `wrap_async()`) raises `VouchRailProviderError(PROVIDER_UNSUPPORTED_CLIENT)` rather than silently producing broken entries.
 
 ## Context manager + decorator
 
@@ -89,7 +89,7 @@ The decorator handles both `def` and `async def`, preserving `__name__` and `__d
 ## PII redaction
 
 ```python
-from auditlayer import InMemoryPiiTokenStore, PiiRedactor, SqlitePiiTokenStore
+from vouchrail import InMemoryPiiTokenStore, PiiRedactor, SqlitePiiTokenStore
 
 store = SqlitePiiTokenStore("./pii.sqlite")  # or InMemoryPiiTokenStore()
 audit = AuditLogger(
@@ -112,11 +112,11 @@ audit = AuditLogger(
 | Tier | Item                                                        | Status  |
 | ---- | ----------------------------------------------------------- | ------- |
 | S1   | Conformance vector test suite (cross-language)              | Done    |
-| S2   | Python schema package (`auditlayer.schema`)                 | Done    |
+| S2   | Python schema package (`vouchrail.schema`)                 | Done    |
 | S3   | Python core SDK (`AuditLogger`, storage, signer, PII)       | Done    |
 | S4   | Python wrap for Anthropic (sync + async)                    | Done    |
 | S5   | Python wrap for OpenAI (sync + async)                       | Done    |
-| S6   | Python CLI parity (`auditlayer init/query/verify/export`)   | Done    |
+| S6   | Python CLI parity (`vouchrail init/query/verify/export`)   | Done    |
 | S7   | Python examples (resume-screening; credit + triage planned) | Partial |
 | —    | `audit.case(...)` context manager                           | Done    |
 | —    | `@audit.track(...)` decorator                               | Done    |

@@ -1,8 +1,8 @@
-AuditLayer
-Copyright 2026 AuditLayer Contributors
+VouchRail
+Copyright 2026 VouchRail Contributors
 
-This product includes software developed by AuditLayer Contributors
-(https://github.com/auditlayer/auditlayer).
+This product includes software developed by VouchRail Contributors
+(https://github.com/vouchrail/vouchrail).
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not
 use this software except in compliance with the License. You may obtain a
@@ -18,6 +18,6 @@ This product references the following third-party specifications:
 - ISO/IEC 24970 (draft) — AI system logging
 - RFC 8785 — JSON Canonicalization Scheme
 
-References are informational; AuditLayer does not assert endorsement
+References are informational; VouchRail does not assert endorsement
 by any standards body or regulator. See /legal/limitations.md for
 the full disclaimer of evidentiary or legal admissibility claims.

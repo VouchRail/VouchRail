@@ -7,9 +7,9 @@
 > 2016/679 ("GDPR") and the UK Data Protection Act 2018.
 
 This Data Processing Agreement ("DPA") forms part of the Terms of Service
-between AuditLayer, Inc. ("Processor") and Customer ("Controller") and
+between VouchRail, Inc. ("Processor") and Customer ("Controller") and
 governs the Processing of Personal Data by Processor on behalf of
-Controller in connection with the hosted-service tiers of the AuditLayer
+Controller in connection with the hosted-service tiers of the VouchRail
 Service.
 
 ## 1. Subject matter, duration, nature and purpose

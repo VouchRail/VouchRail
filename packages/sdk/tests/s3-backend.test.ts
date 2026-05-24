@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
-import { SCHEMA_VERSION } from '@auditlayer/schema';
+import { SCHEMA_VERSION } from '@vouchrail/schema';
 
 import { S3StorageBackend } from '../src/backends/s3.js';
 
 const sampleEntry = {
   schemaVersion: SCHEMA_VERSION,
-  recordedBy: '@auditlayer/sdk@0.1.0',
+  recordedBy: '@vouchrail/sdk@0.1.0',
   callId: 'call-1',
   caseId: 'case-1',
   systemId: 'sys',

@@ -3,7 +3,7 @@ import { mkdir, appendFile, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { createInterface } from 'node:readline';
 
-import { AuditLogEntrySchema, type AuditLogEntry } from '@auditlayer/schema';
+import { AuditLogEntrySchema, type AuditLogEntry } from '@vouchrail/schema';
 
 import type { LocalStorageConfig } from '../config.js';
 import { STORAGE_DEFAULTS } from '../defaults.js';

@@ -1,6 +1,6 @@
-# Contributing to AuditLayer
+# Contributing to VouchRail
 
-Thanks for considering a contribution. AuditLayer is infrastructure that
+Thanks for considering a contribution. VouchRail is infrastructure that
 ends up in regulated production AI systems, so we hold a few things tightly
 and otherwise welcome change.
 
@@ -12,7 +12,7 @@ and otherwise welcome change.
 2. **Hash chain semantics are non-negotiable.** Changes to canonicalization,
    hashing algorithm, or signature format MUST be versioned and gated behind
    `schemaVersion`. Old logs must remain verifiable.
-3. **No `eval` / `Function()` / dynamic require** in `@auditlayer/sdk`. Logging
+3. **No `eval` / `Function()` / dynamic require** in `@vouchrail/sdk`. Logging
    infrastructure is a high-trust component; we keep the surface minimal.
 4. **Keep dependencies tight.** Run-time deps in `packages/sdk` are reviewed
    line-by-line. Prefer stdlib + `zod`.

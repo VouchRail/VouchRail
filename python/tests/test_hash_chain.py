@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import hashlib
 
-from auditlayer.schema.hash_chain import (
+from vouchrail.schema.hash_chain import (
     GENESIS_PREVIOUS_HASH,
     HASH_ALGORITHM,
     compute_entry_hash,
@@ -19,8 +19,8 @@ def test_hash_algorithm_is_sha256():
 
 
 def test_genesis_hash_matches_ts_reference():
-    # Matches the TS implementation: SHA-256("auditlayer:genesis-v1").
-    expected = hashlib.sha256(b"auditlayer:genesis-v1").hexdigest()
+    # Matches the TS implementation: SHA-256("vouchrail:genesis-v1").
+    expected = hashlib.sha256(b"vouchrail:genesis-v1").hexdigest()
     assert GENESIS_PREVIOUS_HASH == expected
 
 

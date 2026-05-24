@@ -8,8 +8,8 @@ from pathlib import Path
 
 import pytest
 
-from auditlayer import AuditLogger, InlineSigner, LocalStorageBackend
-from auditlayer.cli.main import main
+from vouchrail import AuditLogger, InlineSigner, LocalStorageBackend
+from vouchrail.cli.main import main
 
 TEST_SECRET = "test-secret-key-with-enough-length-1234567890"
 
@@ -38,7 +38,7 @@ def _seed(dir_: str, system_id: str = "sys-cli") -> AuditLogger:
 
 @pytest.fixture()
 def seeded() -> tuple[str, str]:
-    with tempfile.TemporaryDirectory(prefix="auditlayer-cli-") as d:
+    with tempfile.TemporaryDirectory(prefix="vouchrail-cli-") as d:
         _seed(d)
         yield d, "sys-cli"
 
@@ -76,7 +76,7 @@ def test_query_filters_by_case(
 
 
 def test_export_requires_a_bound(capsys: pytest.CaptureFixture[str]) -> None:
-    with tempfile.TemporaryDirectory(prefix="auditlayer-cli-") as d:
+    with tempfile.TemporaryDirectory(prefix="vouchrail-cli-") as d:
         _seed(d)
         code = main(["--system-id", "sys-cli", "--storage-dir", d, "export"])
         captured = capsys.readouterr()
@@ -86,7 +86,7 @@ def test_export_requires_a_bound(capsys: pytest.CaptureFixture[str]) -> None:
 
 def test_export_to_file(seeded: tuple[str, str], capsys: pytest.CaptureFixture[str]) -> None:
     dir_, sys_id = seeded
-    with tempfile.TemporaryDirectory(prefix="auditlayer-cli-out-") as out_dir:
+    with tempfile.TemporaryDirectory(prefix="vouchrail-cli-out-") as out_dir:
         out_path = Path(out_dir) / "evidence.jsonl"
         code = main(
             [
@@ -110,8 +110,8 @@ def test_export_to_file(seeded: tuple[str, str], capsys: pytest.CaptureFixture[s
 
 
 def test_init_writes_starter_config(capsys: pytest.CaptureFixture[str]) -> None:
-    with tempfile.TemporaryDirectory(prefix="auditlayer-cli-init-") as d:
-        cfg_path = Path(d) / "auditlayer.config.json"
+    with tempfile.TemporaryDirectory(prefix="vouchrail-cli-init-") as d:
+        cfg_path = Path(d) / "vouchrail.config.json"
         code = main(["init"], cwd=Path(d))
         captured = capsys.readouterr()
         assert code == 0
@@ -122,8 +122,8 @@ def test_init_writes_starter_config(capsys: pytest.CaptureFixture[str]) -> None:
 
 
 def test_init_refuses_to_overwrite(capsys: pytest.CaptureFixture[str]) -> None:
-    with tempfile.TemporaryDirectory(prefix="auditlayer-cli-init-") as d:
-        cfg_path = Path(d) / "auditlayer.config.json"
+    with tempfile.TemporaryDirectory(prefix="vouchrail-cli-init-") as d:
+        cfg_path = Path(d) / "vouchrail.config.json"
         cfg_path.write_text("{}", encoding="utf-8")
         code = main(["init"], cwd=Path(d))
         captured = capsys.readouterr()
@@ -132,7 +132,7 @@ def test_init_refuses_to_overwrite(capsys: pytest.CaptureFixture[str]) -> None:
 
 
 def test_explicit_config_with_traversal_rejected(capsys: pytest.CaptureFixture[str]) -> None:
-    with tempfile.TemporaryDirectory(prefix="auditlayer-cli-") as d:
+    with tempfile.TemporaryDirectory(prefix="vouchrail-cli-") as d:
         code = main(["--config", "../escape.json", "verify"], cwd=Path(d))
         captured = capsys.readouterr()
         assert code == 1

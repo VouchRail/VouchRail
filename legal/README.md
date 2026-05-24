@@ -1,7 +1,7 @@
 # Legal / public pages
 
 This directory contains the public-facing legal documents required by the
-AuditLayer specification §13.
+VouchRail specification §13.
 
 > **All documents in this directory are TEMPLATES intended for attorney review
 > before being adopted as binding legal terms.** Spec §13 explicitly requires

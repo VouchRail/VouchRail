@@ -5,7 +5,7 @@ import { PassThrough } from 'node:stream';
 
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { AuditLogger } from '@auditlayer/sdk';
+import { AuditLogger } from '@vouchrail/sdk';
 
 import { exportCommand, initCommand, queryCommand, verifyCommand } from '../src/commands.js';
 import type { CliConfig } from '../src/config.js';
@@ -53,7 +53,7 @@ describe('cli commands', () => {
   let dir: string;
   let cwd: string;
   beforeEach(() => {
-    cwd = mkdtempSync(join(tmpdir(), 'auditlayer-cli-'));
+    cwd = mkdtempSync(join(tmpdir(), 'vouchrail-cli-'));
     dir = join(cwd, 'audit-logs');
   });
   afterEach(() => {
@@ -65,7 +65,7 @@ describe('cli commands', () => {
       const a = captureIO(cwd);
       const code1 = await initCommand({}, a.io);
       expect(code1).toBe(0);
-      const path = join(cwd, 'auditlayer.config.json');
+      const path = join(cwd, 'vouchrail.config.json');
       expect(existsSync(path)).toBe(true);
       const json = JSON.parse(readFileSync(path, 'utf8'));
       expect(json.systemId).toBe('your-system-id');

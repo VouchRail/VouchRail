@@ -1,5 +1,5 @@
 /**
- * Centralized defaults for the AuditLayer SDK.
+ * Centralized defaults for the VouchRail SDK.
  *
  * Every configurable knob whose default would otherwise be a magic literal
  * scattered through business code lives here. Two rules:
@@ -54,9 +54,9 @@ export const PII_DEFAULTS = {
 /** CLI defaults. */
 export const CLI_DEFAULTS = {
   /** Files searched in CWD when --config is not passed. Order = preference. */
-  configFiles: ['auditlayer.config.json', '.auditlayer.json'] as const,
+  configFiles: ['vouchrail.config.json', '.vouchrail.json'] as const,
   /** Default output path for `init`. */
-  initOutputPath: 'auditlayer.config.json' as const,
+  initOutputPath: 'vouchrail.config.json' as const,
   /** Default config body written by `init`. Caller substitutes real values. */
   initConfigTemplate: {
     systemId: 'your-system-id',

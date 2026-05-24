@@ -10,7 +10,7 @@ import tempfile
 
 import pytest
 
-from auditlayer import (
+from vouchrail import (
     AuditLogger,
     InlineSigner,
     LocalStorageBackend,
@@ -30,7 +30,7 @@ def _logger(dir_: str) -> AuditLogger:
 
 @pytest.fixture()
 def tmp_dir() -> str:
-    with tempfile.TemporaryDirectory(prefix="auditlayer-case-") as d:
+    with tempfile.TemporaryDirectory(prefix="vouchrail-case-") as d:
         yield d
 
 

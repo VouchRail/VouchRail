@@ -7,7 +7,7 @@
 
 ## 1. Security principles
 
-- **Customer owns the chain.** AuditLayer's design assumes the customer
+- **Customer owns the chain.** VouchRail's design assumes the customer
   ultimately owns, controls, and verifies its own audit log evidence.
   The Software writes to customer-controlled storage by default
   (spec §5.5).
@@ -15,8 +15,8 @@
   signatures must be configured to come from a KMS (AWS KMS, GCP KMS,
   HashiCorp Vault) with sign-only permission (spec §5.4). The Software
   exposes a KMS-pluggable interface.
-- **Stateless verification.** The `auditlayer verify` CLI operates offline
-  and does not depend on AuditLayer's hosted services (spec §13.6.B).
+- **Stateless verification.** The `vouchrail verify` CLI operates offline
+  and does not depend on VouchRail's hosted services (spec §13.6.B).
 - **Honest disclosure.** Known limitations are public; see
   [`/legal/limitations.md`](./limitations.md).
 
@@ -26,7 +26,7 @@
 | ----------------------------------------------------------------- | ------------------------------ |
 | TypeScript strict mode for SDK + Schema                           | Required                       |
 | Runtime input validation with Zod                                 | Required for audit log entries |
-| No `eval`, `Function()`, dynamic require in `@auditlayer/sdk`     | Required (CONTRIBUTING)        |
+| No `eval`, `Function()`, dynamic require in `@vouchrail/sdk`     | Required (CONTRIBUTING)        |
 | Dependency review on every PR (npm audit, dependabot)             | Configured                     |
 | Reproducible builds (lockfile committed; CI uses frozen-lockfile) | Configured                     |
 | Tamper-test in `packages/sdk/tests/`                              | Required                       |

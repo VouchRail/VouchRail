@@ -1,4 +1,4 @@
-"""AuditLayer Python SDK — EU AI Act Article 12 audit log infrastructure."""
+"""VouchRail Python SDK — EU AI Act Article 12 audit log infrastructure."""
 
 from .defaults import (
     CLI_DEFAULTS,
@@ -10,14 +10,14 @@ from .defaults import (
 )
 from .errors import (
     ERROR_CODES,
-    AuditLayerConfigError,
-    AuditLayerError,
-    AuditLayerLifecycleError,
-    AuditLayerPiiError,
-    AuditLayerProviderError,
-    AuditLayerSchemaError,
-    AuditLayerSignerError,
-    AuditLayerStorageError,
+    VouchRailConfigError,
+    VouchRailError,
+    VouchRailLifecycleError,
+    VouchRailPiiError,
+    VouchRailProviderError,
+    VouchRailSchemaError,
+    VouchRailSignerError,
+    VouchRailStorageError,
 )
 from .logger import RECORDED_BY, AuditLogger
 from .pii import (
@@ -91,15 +91,15 @@ __all__ = [
     "SIGNING_DEFAULTS",
     # Defaults
     "STORAGE_DEFAULTS",
-    "AuditLayerConfigError",
+    "VouchRailConfigError",
     # Errors
-    "AuditLayerError",
-    "AuditLayerLifecycleError",
-    "AuditLayerPiiError",
-    "AuditLayerProviderError",
-    "AuditLayerSchemaError",
-    "AuditLayerSignerError",
-    "AuditLayerStorageError",
+    "VouchRailError",
+    "VouchRailLifecycleError",
+    "VouchRailPiiError",
+    "VouchRailProviderError",
+    "VouchRailSchemaError",
+    "VouchRailSignerError",
+    "VouchRailStorageError",
     "AuditLogEntry",
     "AuditLogEntryInput",
     # Core SDK

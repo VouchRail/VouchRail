@@ -1,4 +1,4 @@
-"""Allow ``python -m auditlayer.cli``."""
+"""Allow ``python -m vouchrail.cli``."""
 
 from .main import main
 

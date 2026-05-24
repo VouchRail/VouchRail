@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { AuditLogger } from '../src/audit-logger.js';
-import { AuditLayerProviderError, ERROR_CODES } from '../src/errors.js';
+import { VouchRailProviderError, ERROR_CODES } from '../src/errors.js';
 import {
   ANTHROPIC_SNAPSHOT_REGEX,
   deriveAnthropicModelVersion,
@@ -63,7 +63,7 @@ describe('provider registry', () => {
     expect(detectAdapter({})).toBeNull();
   });
 
-  it('wrap() throws AuditLayerProviderError for unknown client', () => {
+  it('wrap() throws VouchRailProviderError for unknown client', () => {
     const audit = makeLogger();
     try {
       audit.wrap(
@@ -77,8 +77,8 @@ describe('provider registry', () => {
       );
       throw new Error('expected throw');
     } catch (err) {
-      expect(err).toBeInstanceOf(AuditLayerProviderError);
-      expect((err as AuditLayerProviderError).code).toBe(ERROR_CODES.PROVIDER_UNSUPPORTED_CLIENT);
+      expect(err).toBeInstanceOf(VouchRailProviderError);
+      expect((err as VouchRailProviderError).code).toBe(ERROR_CODES.PROVIDER_UNSUPPORTED_CLIENT);
     }
   });
 
