@@ -4,7 +4,7 @@ import { join } from 'node:path';
 
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { AuditLogEntrySchema, verifyChain, type AuditLogEntry } from '@auditlayer/schema';
+import { AuditLogEntrySchema, verifyChain, type AuditLogEntry } from '@vouchrail/schema';
 
 import { AuditLogger } from '../src/audit-logger.js';
 import { LocalStorageBackend } from '../src/backends/local.js';
@@ -43,7 +43,7 @@ async function generateChain(audit: AuditLogger, n: number): Promise<AuditLogEnt
 describe('tamper-test (Phase 1 MVP definition of done — spec §6.3)', () => {
   let dir: string;
   beforeEach(() => {
-    dir = mkdtempSync(join(tmpdir(), 'auditlayer-tamper-'));
+    dir = mkdtempSync(join(tmpdir(), 'vouchrail-tamper-'));
   });
   afterEach(() => {
     rmSync(dir, { recursive: true, force: true });

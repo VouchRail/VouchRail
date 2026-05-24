@@ -17,7 +17,7 @@ REPO_ROOT = Path(__file__).resolve().parents[3]
 PY_SRC = REPO_ROOT / "python" / "src"
 sys.path.insert(0, str(PY_SRC))
 
-from auditlayer.schema.jcs import canonicalize  # noqa: E402
+from vouchrail.schema.jcs import canonicalize  # noqa: E402
 
 CASES_DIR = REPO_ROOT / "conformance-vectors" / "cases"
 

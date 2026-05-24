@@ -1,4 +1,4 @@
-import type { ModelProvider } from '@auditlayer/schema';
+import type { ModelProvider } from '@vouchrail/schema';
 
 import type { PiiPatternName } from './pii-patterns.js';
 

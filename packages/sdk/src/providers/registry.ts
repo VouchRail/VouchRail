@@ -1,7 +1,7 @@
-import type { ModelProvider } from '@auditlayer/schema';
+import type { ModelProvider } from '@vouchrail/schema';
 
 import type { WrapContext } from '../config.js';
-import { AuditLayerProviderError, ERROR_CODES } from '../errors.js';
+import { VouchRailProviderError, ERROR_CODES } from '../errors.js';
 
 import { anthropicAdapter } from './anthropic.js';
 import { openaiAdapter } from './openai.js';
@@ -44,7 +44,7 @@ export function detectAdapter(client: object): ProviderAdapter | null {
 }
 
 /**
- * Wrap a third-party provider client. Throws `AuditLayerProviderError` if no
+ * Wrap a third-party provider client. Throws `VouchRailProviderError` if no
  * adapter recognises the client shape.
  */
 export function wrapClient<T extends object>(
@@ -54,7 +54,7 @@ export function wrapClient<T extends object>(
 ): T {
   const adapter = detectAdapter(client);
   if (!adapter) {
-    throw new AuditLayerProviderError(
+    throw new VouchRailProviderError(
       ERROR_CODES.PROVIDER_UNSUPPORTED_CLIENT,
       'AuditLogger.wrap: client does not match any registered provider adapter. ' +
         'Built-in adapters: ' +

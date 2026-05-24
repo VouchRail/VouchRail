@@ -1,5 +1,5 @@
 name: Feature request
-description: Suggest a new capability for AuditLayer
+description: Suggest a new capability for VouchRail
 title: '[feat] '
 labels: ['enhancement', 'needs-triage']
 body:
@@ -25,9 +25,9 @@ body:
     attributes:
       label: Affected surface
       options:
-        - '@auditlayer/sdk'
-        - '@auditlayer/cli'
-        - '@auditlayer/schema'
+        - '@vouchrail/sdk'
+        - '@vouchrail/cli'
+        - '@vouchrail/schema'
         - 'docs'
         - 'examples'
         - 'other'

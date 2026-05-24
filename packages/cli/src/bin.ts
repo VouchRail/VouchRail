@@ -6,7 +6,7 @@ runCli().then(
     if (code) process.exit(code);
   },
   (err) => {
-    process.stderr.write(`auditlayer: ${(err as Error).message}\n`);
+    process.stderr.write(`vouchrail: ${(err as Error).message}\n`);
     process.exit(1);
   },
 );

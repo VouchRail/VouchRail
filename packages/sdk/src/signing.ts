@@ -2,7 +2,7 @@ import { createHmac } from 'node:crypto';
 
 import type { SigningKeyConfig } from './config.js';
 import { SIGNING_DEFAULTS } from './defaults.js';
-import { AuditLayerConfigError, AuditLayerSignerError, ERROR_CODES } from './errors.js';
+import { VouchRailConfigError, VouchRailSignerError, ERROR_CODES } from './errors.js';
 
 export interface Signer {
   /** Returns a signature string for the given SHA-256 hex digest. */
@@ -15,7 +15,7 @@ export class InlineSigner implements Signer {
   readonly keyId = SIGNING_DEFAULTS.inlineKeyId;
   constructor(private readonly secret: string) {
     if (!secret || secret.length < SIGNING_DEFAULTS.inlineSecretMinLength) {
-      throw new AuditLayerSignerError(
+      throw new VouchRailSignerError(
         ERROR_CODES.SIGNER_INVALID_SECRET,
         `InlineSigner: secret must be at least ${SIGNING_DEFAULTS.inlineSecretMinLength} characters. ` +
           'Inline signing is intended for development only; use a KMS signer in production.',
@@ -39,7 +39,7 @@ class ExternalSigner implements Signer {
   async sign(entryHashHex: string): Promise<string> {
     const out = await this.signFn(entryHashHex);
     if (typeof out !== 'string' || out.length === 0) {
-      throw new AuditLayerSignerError(
+      throw new VouchRailSignerError(
         ERROR_CODES.SIGNER_EXTERNAL_INVALID_OUTPUT,
         'External signer returned an invalid signature',
         { keyId: this.keyId },
@@ -58,7 +58,7 @@ export function createSigner(config: SigningKeyConfig): Signer {
     default: {
       const _exhaustive: never = config;
       void _exhaustive;
-      throw new AuditLayerConfigError(
+      throw new VouchRailConfigError(
         ERROR_CODES.CONFIG_INVALID,
         'createSigner: unknown signing key kind',
         { received: config },

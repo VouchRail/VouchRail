@@ -1,8 +1,8 @@
 {
-  "name": "@auditlayer/example-credit-decision",
+  "name": "@vouchrail/example-credit-decision",
   "version": "0.1.0",
   "private": true,
-  "description": "Example: AI credit-decision (fintech, Annex III high-risk) with AuditLayer.",
+  "description": "Example: AI credit-decision (fintech, Annex III high-risk) with VouchRail.",
   "license": "Apache-2.0",
   "type": "module",
   "scripts": {
@@ -12,8 +12,8 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@auditlayer/schema": "workspace:^",
-    "@auditlayer/sdk": "workspace:^"
+    "@vouchrail/schema": "workspace:^",
+    "@vouchrail/sdk": "workspace:^"
   },
   "devDependencies": {
     "@types/node": "^20.14.0",

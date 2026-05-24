@@ -1,4 +1,4 @@
-import type { AuditLogEntry } from '@auditlayer/schema';
+import type { AuditLogEntry } from '@vouchrail/schema';
 
 export interface AppendOptions {
   systemId: string;

@@ -2,7 +2,7 @@ import { createHash, randomBytes } from 'node:crypto';
 
 import type { PiiRedactionConfig } from './config.js';
 import { PII_DEFAULTS } from './defaults.js';
-import { AuditLayerPiiError, ERROR_CODES } from './errors.js';
+import { VouchRailPiiError, ERROR_CODES } from './errors.js';
 import {
   ALL_PII_PATTERN_NAMES,
   DEFAULT_ENABLED_PII_PATTERNS,
@@ -112,7 +112,7 @@ export class SqlitePiiTokenStore implements PiiTokenStore {
       // eslint-disable-next-line @typescript-eslint/no-require-imports
       Database = require('better-sqlite3');
     } catch (err) {
-      throw new AuditLayerPiiError(
+      throw new VouchRailPiiError(
         ERROR_CODES.PII_TOKEN_STORE_MISSING_DEP,
         'SqlitePiiTokenStore requires the optional peer dependency "better-sqlite3". ' +
           `Install it with: pnpm add better-sqlite3. Original error: ${(err as Error).message}`,
@@ -183,8 +183,19 @@ export function detectPii(
   for (const [name, regex] of Object.entries(customPatterns)) {
     pushMatches(text, regex, name, results);
   }
-  results.sort((a, b) => a.index - b.index);
-  return results;
+  // Sort by index, then by descending length so the longest match wins on ties.
+  results.sort((a, b) => a.index - b.index || b.match.length - a.match.length);
+  // Drop overlapping matches: replacement walks backwards over `match.length`
+  // spans, so any overlap corrupts the output. Keep the earliest (and longest
+  // on ties) and drop any later match whose span intersects an already-kept one.
+  const deduped: typeof results = [];
+  let lastEnd = -1;
+  for (const m of results) {
+    if (m.index < lastEnd) continue;
+    deduped.push(m);
+    lastEnd = m.index + m.match.length;
+  }
+  return deduped;
 }
 
 function pushMatches(
@@ -221,7 +232,7 @@ export class PiiRedactor {
     this.customPatterns = config?.customPatterns ?? {};
     this.tokenStore = tokenStore;
     if (this.enabled && this.strategy === 'pseudonymize' && !this.tokenStore) {
-      throw new AuditLayerPiiError(
+      throw new VouchRailPiiError(
         ERROR_CODES.PII_TOKEN_STORE_MISSING,
         'PiiRedactor: pseudonymize strategy requires a token store. ' +
           'Configure piiRedaction.tokenStore.',

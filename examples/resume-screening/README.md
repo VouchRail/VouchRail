@@ -1,6 +1,6 @@
 # Example — AI resume screening (HR tech, EU AI Act Annex III)
 
-A worked demo of AuditLayer for **AI-assisted recruitment**, which is the
+A worked demo of VouchRail for **AI-assisted recruitment**, which is the
 single largest Annex III high-risk category under the EU AI Act.
 
 The example does not call a real LLM — it ships with a mock provider so
@@ -17,20 +17,20 @@ pnpm example:resume
 
 ## What the example demonstrates
 
-- One config-line integration of AuditLayer with an Anthropic-style client.
+- One config-line integration of VouchRail with an Anthropic-style client.
 - Article 12 fields recorded for every candidate decision:
   `caseId` (candidate ID), `promptTemplateId` + version, model + version,
   prompt + input + output fingerprints, `outputDecision`, `reasonCodes`,
   `operatorId`, optional `humanReview`.
 - PII pseudonymization: candidate names, emails, and phones in the input
   are replaced with `pii:` tokens at log time.
-- Hash chain is built across multiple decisions; `auditlayer verify`
+- Hash chain is built across multiple decisions; `vouchrail verify`
   detects any modification.
 
 ## Verify the resulting logs
 
 ```bash
-pnpm dlx @auditlayer/cli verify \
+pnpm dlx @vouchrail/cli verify \
   --system-id resume-screener-example \
   --storage-dir ./audit-logs
 ```

@@ -1,6 +1,6 @@
 # Sub-processors (placeholder)
 
-This page lists Sub-processors engaged by AuditLayer to provide the
+This page lists Sub-processors engaged by VouchRail to provide the
 hosted-service tiers of the Service. The list will be populated and kept
 current per spec §13 and the DPA at [`/legal/dpa.md`](./dpa.md).
 

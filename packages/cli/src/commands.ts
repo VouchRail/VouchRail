@@ -7,13 +7,13 @@ import {
   verifyChain,
   type AuditLogEntry,
   type ChainVerificationResult,
-} from '@auditlayer/schema';
+} from '@vouchrail/schema';
 import {
-  AuditLayerConfigError,
-  AuditLayerSchemaError,
+  VouchRailConfigError,
+  VouchRailSchemaError,
   CLI_DEFAULTS,
   ERROR_CODES,
-} from '@auditlayer/sdk';
+} from '@vouchrail/sdk';
 
 import { createBackend } from './backend-factory.js';
 import type { CliConfig } from './config.js';
@@ -22,7 +22,7 @@ function validateIsoBound(value: string | undefined, label: string): void {
   if (value === undefined) return;
   const t = Date.parse(value);
   if (Number.isNaN(t)) {
-    throw new AuditLayerSchemaError(
+    throw new VouchRailSchemaError(
       ERROR_CODES.SCHEMA_INVALID_TIMESTAMP,
       `${label} must be an ISO-8601 timestamp (got ${JSON.stringify(value)})`,
       { label, value },
@@ -34,7 +34,7 @@ function validateRange(from: string | undefined, to: string | undefined): void {
   validateIsoBound(from, '--from');
   validateIsoBound(to, '--to');
   if (from && to && Date.parse(from) > Date.parse(to)) {
-    throw new AuditLayerConfigError(
+    throw new VouchRailConfigError(
       ERROR_CODES.CONFIG_INVALID,
       `--from (${from}) must not be after --to (${to}).`,
       { from, to },

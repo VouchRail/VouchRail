@@ -1,7 +1,7 @@
-# @auditlayer/schema
+# @vouchrail/schema
 
 The schema, runtime validators, canonical serialization, and SHA-256
-hash-chain helpers shared by `@auditlayer/sdk` and `@auditlayer/cli`.
+hash-chain helpers shared by `@vouchrail/sdk` and `@vouchrail/cli`.
 
 Designed to support **EU AI Act Article 12** record-keeping for high-risk
 AI systems.
@@ -20,7 +20,7 @@ AI systems.
 ## Install
 
 ```bash
-pnpm add @auditlayer/schema
+pnpm add @vouchrail/schema
 ```
 
 ## Example
@@ -32,7 +32,7 @@ import {
   computeEntryHash,
   linkEntry,
   verifyChain,
-} from '@auditlayer/schema';
+} from '@vouchrail/schema';
 
 const entry = AuditLogEntrySchema.parse({
   /* … your fields … */
@@ -52,7 +52,7 @@ if (!result.valid) {
 
 The `schemaVersion` field on every entry is the source of truth. We do not
 silently break the schema; any breaking field change requires a new
-`schemaVersion` value (e.g., `auditlayer-v1.0` → `auditlayer-v2.0`) and a
+`schemaVersion` value (e.g., `vouchrail-v1.0` → `vouchrail-v2.0`) and a
 migration note.
 
 ## License

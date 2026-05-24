@@ -42,8 +42,8 @@ PII_DEFAULTS: Final = PiiDefaults()
 
 
 class CliDefaults:
-    config_files: tuple[str, ...] = ("auditlayer.config.json", ".auditlayer.json")
-    init_output_path: str = "auditlayer.config.json"
+    config_files: tuple[str, ...] = ("vouchrail.config.json", ".vouchrail.json")
+    init_output_path: str = "vouchrail.config.json"
 
 
 CLI_DEFAULTS: Final = CliDefaults()

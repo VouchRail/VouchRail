@@ -6,12 +6,12 @@ import tempfile
 
 import pytest
 
-from auditlayer import (
+from vouchrail import (
     ERROR_CODES,
-    AuditLayerProviderError,
     AuditLogger,
     InlineSigner,
     LocalStorageBackend,
+    VouchRailProviderError,
     WrapContext,
 )
 
@@ -28,7 +28,7 @@ def _logger(dir_: str) -> AuditLogger:
 
 @pytest.fixture()
 def tmp_dir() -> str:
-    with tempfile.TemporaryDirectory(prefix="auditlayer-async-") as d:
+    with tempfile.TemporaryDirectory(prefix="vouchrail-async-") as d:
         yield d
 
 
@@ -126,7 +126,7 @@ def test_wrap_async_refuses_sync_client(tmp_dir: str) -> None:
     class _SyncClient:
         messages = _SyncMessages()
 
-    with pytest.raises(AuditLayerProviderError) as exc:
+    with pytest.raises(VouchRailProviderError) as exc:
         audit.wrap_async(
             _SyncClient(),
             WrapContext(
@@ -152,7 +152,7 @@ def test_wrap_refuses_async_client(tmp_dir: str) -> None:
     class _AsyncClient:
         messages = _AsyncMessages()
 
-    with pytest.raises(AuditLayerProviderError) as exc:
+    with pytest.raises(VouchRailProviderError) as exc:
         audit.wrap(
             _AsyncClient(),
             WrapContext(

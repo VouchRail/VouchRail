@@ -12,7 +12,7 @@ import math
 
 import pytest
 
-from auditlayer.schema.jcs import canonicalize, canonicalize_for_hash
+from vouchrail.schema.jcs import canonicalize, canonicalize_for_hash
 
 
 def test_null():

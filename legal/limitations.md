@@ -3,20 +3,20 @@
 > Public Known Limitations page required by spec §13.6(E). Counter-intuitively,
 > publishing limitations **reduces** legal exposure compared to silence.
 
-AuditLayer is infrastructure that supports — but does not guarantee — Article 12
+VouchRail is infrastructure that supports — but does not guarantee — Article 12
 compliance and audit-readiness. The following limitations are intentional and
 disclosed in good faith.
 
 ## 1. Not a legal advisor
 
-AuditLayer does not provide legal advice. Determination of whether a particular
+VouchRail does not provide legal advice. Determination of whether a particular
 AI system is "high-risk" under EU AI Act Annex III, whether Article 12 applies,
 and how to operate within applicable law is the responsibility of Customer's
 own qualified counsel.
 
 ## 2. Not certified by any Notified Body
 
-AuditLayer has not been certified by any Notified Body designated under the
+VouchRail has not been certified by any Notified Body designated under the
 EU AI Act, and the Software has not been the subject of conformity assessment
 proceedings.
 
@@ -40,7 +40,7 @@ that the Software cannot detect.
 A compromised or mis-managed signing key invalidates the cryptographic
 integrity of the audit chain. Customers are strongly recommended to configure
 the signing key to come from a KMS service (AWS KMS, GCP KMS, HashiCorp Vault)
-with sign-only permission. AuditLayer cannot detect signing-key compromise.
+with sign-only permission. VouchRail cannot detect signing-key compromise.
 
 ## 6. WORM / Object Lock requires Customer storage configuration
 
@@ -79,7 +79,7 @@ verifiable under the latest CLI. Migration tooling will be provided.
 
 ## 11. SOC 2 / ISO certifications
 
-In MVP / Phase 1, AuditLayer has not completed SOC 2 Type 1, SOC 2 Type 2,
+In MVP / Phase 1, VouchRail has not completed SOC 2 Type 1, SOC 2 Type 2,
 or ISO/IEC 27001 certification. These are roadmap items (spec Phase 2, months
 5–8). The Apache 2.0 open-source Software does not require these certifications
 to be used self-hosted by Customer.
@@ -93,4 +93,4 @@ and transfer arrangements. Multi-region hosted deployments are a roadmap item.
 ---
 
 If you have questions about any of these limitations, contact
-`legal@auditlayer.io`.
+`legal@vouchrail.com`.

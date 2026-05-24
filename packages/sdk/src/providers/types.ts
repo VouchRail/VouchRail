@@ -1,4 +1,4 @@
-import type { ModelProvider } from '@auditlayer/schema';
+import type { ModelProvider } from '@vouchrail/schema';
 
 import type { WrapContext } from '../config.js';
 
@@ -62,5 +62,5 @@ export interface ProviderAdapter {
   wrap(audit: ProviderHostLogger, client: object, context: WrapContext): unknown;
 }
 
-/** Risk flag emitted when a provider call surfaces an error to AuditLayer. */
+/** Risk flag emitted when a provider call surfaces an error to VouchRail. */
 export const PROVIDER_ERROR_RISK_FLAG = 'provider_error';

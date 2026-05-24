@@ -11,7 +11,7 @@ describe('config', () => {
   let prevCwd: string;
 
   beforeEach(() => {
-    cwd = mkdtempSync(join(tmpdir(), 'auditlayer-cfg-'));
+    cwd = mkdtempSync(join(tmpdir(), 'vouchrail-cfg-'));
     prevCwd = process.cwd();
     process.chdir(cwd);
   });
@@ -27,7 +27,7 @@ describe('config', () => {
 
   it('loadConfig reads a valid local config', async () => {
     writeFileSync(
-      join(cwd, 'auditlayer.config.json'),
+      join(cwd, 'vouchrail.config.json'),
       JSON.stringify({ systemId: 'x', storage: { type: 'local', dir: './logs' } }),
     );
     const c = await loadConfig();
@@ -36,7 +36,7 @@ describe('config', () => {
   });
 
   it('loadConfig rejects malformed configs', async () => {
-    writeFileSync(join(cwd, 'auditlayer.config.json'), '{}');
+    writeFileSync(join(cwd, 'vouchrail.config.json'), '{}');
     await expect(loadConfig()).rejects.toThrow(/systemId/);
   });
 

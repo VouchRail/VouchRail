@@ -2,7 +2,7 @@ import { mkdirSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { AuditLogger, RETENTION_DEFAULTS } from '@auditlayer/sdk';
+import { AuditLogger, RETENTION_DEFAULTS } from '@vouchrail/sdk';
 
 import { TRIAGE_POLICY, type TriagePolicyConfig } from './config.js';
 

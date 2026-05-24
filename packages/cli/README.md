@@ -1,6 +1,6 @@
-# @auditlayer/cli
+# @vouchrail/cli
 
-Command-line tool for the AuditLayer audit log. Used by engineers and
+Command-line tool for the VouchRail audit log. Used by engineers and
 compliance officers to:
 
 - `init` — write a starter configuration file
@@ -9,20 +9,20 @@ compliance officers to:
 - `export` — emit a JSONL evidence bundle for a case or date range
 
 **Offline by design.** The `verify` command runs entirely against the
-configured storage backend; no AuditLayer cloud connection is required.
+configured storage backend; no VouchRail cloud connection is required.
 This is the property described in spec §13.6.B.
 
 ## Install
 
 ```bash
-pnpm add -D @auditlayer/cli
+pnpm add -D @vouchrail/cli
 # or one-shot
-pnpm dlx @auditlayer/cli --help
+pnpm dlx @vouchrail/cli --help
 ```
 
 ## Configuration
 
-By default the CLI reads `./auditlayer.config.json` (override with
+By default the CLI reads `./vouchrail.config.json` (override with
 `--config <path>`). Example:
 
 ```json
@@ -44,11 +44,11 @@ For S3:
 ## Commands
 
 ```text
-auditlayer init [--output auditlayer.config.json]
-auditlayer query --case-id <id> [--from <iso>] [--to <iso>]
-auditlayer verify [--from <iso>] [--to <iso>] [--case-id <id>]
-auditlayer export --case-id <id> [--output <path>]
-auditlayer export --from <iso> --to <iso> [--output <path>]
+vouchrail init [--output vouchrail.config.json]
+vouchrail query --case-id <id> [--from <iso>] [--to <iso>]
+vouchrail verify [--from <iso>] [--to <iso>] [--case-id <id>]
+vouchrail export --case-id <id> [--output <path>]
+vouchrail export --from <iso> --to <iso> [--output <path>]
 ```
 
 Global flags:

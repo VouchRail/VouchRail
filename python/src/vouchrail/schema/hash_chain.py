@@ -13,9 +13,9 @@ from .jcs import canonicalize_for_hash
 
 HASH_ALGORITHM: Literal["sha256"] = "sha256"
 
-# SHA-256 of the ASCII sentinel "auditlayer:genesis-v1" — stable across all
+# SHA-256 of the ASCII sentinel "vouchrail:genesis-v1" — stable across all
 # installations and matches the TS implementation byte-for-byte.
-GENESIS_PREVIOUS_HASH: str = hashlib.sha256(b"auditlayer:genesis-v1").hexdigest()
+GENESIS_PREVIOUS_HASH: str = hashlib.sha256(b"vouchrail:genesis-v1").hexdigest()
 
 
 def compute_entry_hash(entry_without_hash_or_sig: dict[str, Any]) -> str:

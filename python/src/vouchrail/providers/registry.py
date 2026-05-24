@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from ..errors import ERROR_CODES, AuditLayerProviderError
+from ..errors import ERROR_CODES, VouchRailProviderError
 from .anthropic import anthropic_adapter
 from .anthropic_async import async_anthropic_adapter
 from .base import ProviderAdapter, ProviderHostLogger, WrapContext
@@ -63,7 +63,7 @@ def detect_adapter(client: Any, *, async_: bool = False) -> ProviderAdapter | No
 def _raise_unsupported(client: Any, *, async_: bool) -> None:
     builtins = BUILT_IN_ASYNC_PROVIDER_ADAPTERS if async_ else BUILT_IN_PROVIDER_ADAPTERS
     surface = "wrap_async" if async_ else "wrap"
-    raise AuditLayerProviderError(
+    raise VouchRailProviderError(
         ERROR_CODES["PROVIDER_UNSUPPORTED_CLIENT"],
         f"AuditLogger.{surface}: client does not match any registered "
         f"{'async ' if async_ else ''}provider adapter. "

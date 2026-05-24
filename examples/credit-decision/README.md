@@ -2,7 +2,7 @@
 
 AI-assisted creditworthiness assessment is explicitly listed in Annex III
 of the EU AI Act as a high-risk application. This example demonstrates
-AuditLayer recording every credit decision, with an explicit
+VouchRail recording every credit decision, with an explicit
 **`humanReview`** step for borderline cases — exactly the kind of
 human-oversight artifact Article 14 expects.
 
@@ -26,7 +26,7 @@ pnpm example:credit
 ## Verify
 
 ```bash
-pnpm dlx @auditlayer/cli verify \
+pnpm dlx @vouchrail/cli verify \
   --system-id credit-decision-example \
   --storage-dir ./audit-logs
 ```

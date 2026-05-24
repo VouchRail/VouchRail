@@ -11,7 +11,7 @@ import hashlib
 import hmac
 
 from ..defaults import SIGNING_DEFAULTS
-from ..errors import ERROR_CODES, AuditLayerSignerError
+from ..errors import ERROR_CODES, VouchRailSignerError
 from .base import Signer
 
 
@@ -20,7 +20,7 @@ class InlineSigner(Signer):
 
     def __init__(self, secret: str) -> None:
         if not secret or len(secret) < SIGNING_DEFAULTS.inline_secret_min_length:
-            raise AuditLayerSignerError(
+            raise VouchRailSignerError(
                 ERROR_CODES["SIGNER_INVALID_SECRET"],
                 f"InlineSigner: secret must be at least "
                 f"{SIGNING_DEFAULTS.inline_secret_min_length} characters. "

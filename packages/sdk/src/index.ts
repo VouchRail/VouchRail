@@ -43,16 +43,16 @@ export { createSigner, InlineSigner } from './signing.js';
 export { fingerprint, deriveDurationMs, nowIso, uuidv4 } from './util.js';
 
 export {
-  AuditLayerError,
-  AuditLayerConfigError,
-  AuditLayerStorageError,
-  AuditLayerSchemaError,
-  AuditLayerSignerError,
-  AuditLayerProviderError,
-  AuditLayerPiiError,
-  AuditLayerLifecycleError,
+  VouchRailError,
+  VouchRailConfigError,
+  VouchRailStorageError,
+  VouchRailSchemaError,
+  VouchRailSignerError,
+  VouchRailProviderError,
+  VouchRailPiiError,
+  VouchRailLifecycleError,
   ERROR_CODES,
-  type AuditLayerErrorCode,
+  type VouchRailErrorCode,
 } from './errors.js';
 
 export {

@@ -5,19 +5,19 @@
 > GDPR (EU), UK GDPR, CCPA/CPRA (California), and applicable APAC privacy law.
 
 **Effective Date:** `[to be filled by counsel]`
-**Controller for this site:** AuditLayer, Inc., Delaware, USA.
+**Controller for this site:** VouchRail, Inc., Delaware, USA.
 **EU Representative:** `[to be appointed under GDPR Art. 27 when required]`
-**Contact:** `privacy@auditlayer.io`
+**Contact:** `privacy@vouchrail.com`
 
 ## 1. Scope
 
-This policy covers personal data collected by AuditLayer when individuals
+This policy covers personal data collected by VouchRail when individuals
 visit the public website, sign up for accounts, contact us, or use the
 hosted-service tiers of the Service.
 
-When a Customer uses AuditLayer's Software or hosted Service to record
+When a Customer uses VouchRail's Software or hosted Service to record
 audit logs about Customer's own AI system operation, **Customer is the
-data controller** for any personal data in those logs and AuditLayer acts
+data controller** for any personal data in those logs and VouchRail acts
 as a **data processor** subject to the Data Processing Agreement at
 [`/legal/dpa.md`](./dpa.md).
 
@@ -71,17 +71,17 @@ Subject to applicable law, you have the right to:
   ICO in the UK, BfDI in Germany).
 
 For audit-log content recorded by the Software, exercise these rights with
-the **Customer** that operates the AI system, not AuditLayer; AuditLayer
+the **Customer** that operates the AI system, not VouchRail; VouchRail
 will forward applicable requests under the DPA.
 
 ## 7. Article 12 × GDPR interaction _(spec §1.5)_
 
-The AuditLayer Software is designed to support the simultaneous obligations
+The VouchRail Software is designed to support the simultaneous obligations
 of EU AI Act Article 12 (retention of audit records ≥ 6 months) and GDPR
 (deletion of personal data when no longer necessary; right of erasure).
 The Software achieves this by pseudonymizing personal data fields at log
 time and storing the token-to-value lookup in a separate, GDPR-deletable
-store under Customer control. AuditLayer makes no representation that this
+store under Customer control. VouchRail makes no representation that this
 mechanism is sufficient on its own; Customer must operate the token store
 and erasure workflow according to its DPA and applicable law.
 
@@ -96,6 +96,6 @@ announced on the website and, for hosted-service Customers, via email.
 
 ## 10. Contact
 
-- Privacy questions: `privacy@auditlayer.io`
-- Data subject requests: `privacy@auditlayer.io`
-- Legal notices: `legal@auditlayer.io`
+- Privacy questions: `privacy@vouchrail.com`
+- Data subject requests: `privacy@vouchrail.com`
+- Legal notices: `legal@vouchrail.com`

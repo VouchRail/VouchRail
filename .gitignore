@@ -33,7 +33,7 @@ Thumbs.db
 
 # Local audit fixtures
 audit-logs/
-*.auditlayer.local/
+*.vouchrail.local/
 *.sqlite
 *.sqlite-journal
 

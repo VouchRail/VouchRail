@@ -2,14 +2,14 @@
 
 Byte-compatible with the TypeScript reference implementation in
 ``packages/schema/src/canonicalize.ts``. Cross-language hash determinism is the
-non-negotiable invariant of the AuditLayer schema spec; any divergence here
+non-negotiable invariant of the VouchRail schema spec; any divergence here
 breaks the chain.
 
 Rules implemented:
 - UTF-8 output bytes (the returned ``str`` encodes to UTF-8 cleanly).
 - Object keys sorted by UTF-16 code unit order (RFC 8785 §3.2.3). Python
   strings iterate over Unicode code points; for the BMP-only key space the
-  AuditLayer schema requires (ASCII-ish identifiers), code-point order matches
+  VouchRail schema requires (ASCII-ish identifiers), code-point order matches
   UTF-16 code-unit order. The unit tests pin this with explicit non-ASCII
   vectors.
 - Strings serialized via :func:`json.dumps` with ``ensure_ascii=False`` and
@@ -183,7 +183,7 @@ def _serialize_object(value: dict[str, Any], seen: set[int]) -> str:
     seen.add(obj_id)
     try:
         # Drop keys whose value is None — RFC 8785 says null is a valid JSON
-        # value, but the AuditLayer schema spec (matching the TS impl) treats
+        # value, but the VouchRail schema spec (matching the TS impl) treats
         # absent optional fields as "drop the key from the canonical form" so
         # that callers can choose between explicit-null and absent semantics.
         # The TS implementation drops only ``undefined``; Python has no

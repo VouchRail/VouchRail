@@ -1,6 +1,6 @@
 # Security Policy
 
-AuditLayer is infrastructure that records evidence used in regulatory audits.
+VouchRail is infrastructure that records evidence used in regulatory audits.
 Bugs in this software can damage the integrity of customer audit chains and
 expose customers to regulatory penalties. We take security reports seriously.
 
@@ -10,8 +10,8 @@ expose customers to regulatory penalties. We take security reports seriously.
 
 Report privately via:
 
-- **Email**: `security@auditlayer.io` (GPG key fingerprint to be published before v1.0)
-- **GitHub Private Vulnerability Reporting**: https://github.com/jeffry1829/AuditLayer/security/advisories/new
+- **Email**: `security@vouchrail.com` (GPG key fingerprint to be published before v1.0)
+- **GitHub Private Vulnerability Reporting**: https://github.com/vouchrail/vouchrail/security/advisories/new
 
 Please include:
 
@@ -36,7 +36,7 @@ These targets follow the incident response posture described in spec §13.6(D).
 
 In scope:
 
-- Vulnerabilities in published `@auditlayer/*` npm packages (latest minor + previous minor).
+- Vulnerabilities in published `@vouchrail/*` npm packages (latest minor + previous minor).
 - Issues that can compromise the integrity, authenticity, or non-repudiation
   of audit log entries (hash chain bypass, signature forgery, canonicalization
   collisions, etc.).
@@ -58,8 +58,8 @@ Out of scope:
 ## Safe harbor
 
 Good-faith security research that respects this policy will not result in
-legal action from AuditLayer Contributors. Do not run automated scanners
-against production AuditLayer infrastructure without prior coordination.
+legal action from VouchRail Contributors. Do not run automated scanners
+against production VouchRail infrastructure without prior coordination.
 
 ## Hall of fame
 

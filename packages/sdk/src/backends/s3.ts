@@ -1,8 +1,8 @@
-import { AuditLogEntrySchema, type AuditLogEntry } from '@auditlayer/schema';
+import { AuditLogEntrySchema, type AuditLogEntry } from '@vouchrail/schema';
 
 import type { S3StorageConfig } from '../config.js';
 import { STORAGE_DEFAULTS } from '../defaults.js';
-import { AuditLayerStorageError, ERROR_CODES } from '../errors.js';
+import { VouchRailStorageError, ERROR_CODES } from '../errors.js';
 import { assertSafePathSegment } from '../util.js';
 import type { AppendOptions, QueryOptions, StorageBackend } from './types.js';
 
@@ -29,7 +29,7 @@ function loadAwsSdk(): S3Module {
     const mod = require('@aws-sdk/client-s3') as S3Module;
     return mod;
   } catch (err) {
-    throw new AuditLayerStorageError(
+    throw new VouchRailStorageError(
       ERROR_CODES.STORAGE_BACKEND_MISSING_DEP,
       'S3StorageBackend requires the optional peer dependency "@aws-sdk/client-s3". ' +
         `Install it with: pnpm add @aws-sdk/client-s3. Original error: ${(err as Error).message}`,
@@ -47,7 +47,6 @@ export interface S3BackendDeps {
 
 export class S3StorageBackend implements StorageBackend {
   private readonly bucket: string;
-  private readonly region: string;
   private readonly prefix: string;
   private readonly client: S3Client;
   private readonly sdk: S3Module;
@@ -55,7 +54,6 @@ export class S3StorageBackend implements StorageBackend {
   constructor(config: S3StorageConfig, deps: S3BackendDeps = {}) {
     this.sdk = deps.sdk ?? loadAwsSdk();
     this.bucket = config.bucket;
-    this.region = config.region;
     this.prefix = config.prefix ? config.prefix.replace(/\/$/, '') : '';
     this.client =
       deps.client ??
@@ -140,10 +138,5 @@ export class S3StorageBackend implements StorageBackend {
 
   private prefixFor(systemId: string): string {
     return [this.prefix, systemId].filter(Boolean).join('/') + '/';
-  }
-
-  /** Exposed for tests / diagnostics. */
-  get region_(): string {
-    return this.region;
   }
 }

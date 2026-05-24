@@ -1,5 +1,5 @@
 {
-  "name": "@auditlayer/conformance-runner-ts",
+  "name": "@vouchrail/conformance-runner-ts",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -8,7 +8,7 @@
     "verify": "tsx run.ts verify"
   },
   "dependencies": {
-    "@auditlayer/schema": "workspace:^"
+    "@vouchrail/schema": "workspace:^"
   },
   "devDependencies": {
     "tsx": "^4.16.0",

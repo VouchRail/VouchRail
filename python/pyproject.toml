@@ -3,13 +3,13 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "auditlayer"
+name = "vouchrail"
 version = "0.1.0"
-description = "AuditLayer SDK — EU AI Act Article 12 tamper-evident audit logs (Python parity)."
+description = "VouchRail SDK — EU AI Act Article 12 tamper-evident audit logs (Python parity)."
 readme = "README.md"
 license = "Apache-2.0"
 requires-python = ">=3.10"
-authors = [{ name = "AuditLayer Contributors" }]
+authors = [{ name = "VouchRail Contributors" }]
 keywords = [
     "eu-ai-act",
     "article-12",
@@ -52,15 +52,15 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/jeffry1829/AuditLayer"
-Repository = "https://github.com/jeffry1829/AuditLayer"
-Issues = "https://github.com/jeffry1829/AuditLayer/issues"
+Homepage = "https://github.com/vouchrail/vouchrail"
+Repository = "https://github.com/vouchrail/vouchrail"
+Issues = "https://github.com/vouchrail/vouchrail/issues"
 
 [project.scripts]
-auditlayer = "auditlayer.cli.main:main"
+vouchrail = "vouchrail.cli.main:main"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/auditlayer"]
+packages = ["src/vouchrail"]
 
 [tool.hatch.build.targets.sdist]
 include = [

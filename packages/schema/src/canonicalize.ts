@@ -3,7 +3,7 @@
  *
  * Produces a deterministic byte representation of a JSON-compatible value so
  * that two parties computing the hash of the same entry compute the same
- * hash. Required for the AuditLayer hash chain.
+ * hash. Required for the VouchRail hash chain.
  *
  * Rules implemented:
  * - UTF-8 output (the returned string is UTF-8 when encoded).

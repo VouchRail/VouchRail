@@ -1,13 +1,13 @@
-# @auditlayer/sdk
+# @vouchrail/sdk
 
-The AuditLayer integration SDK. Wraps existing LLM SDKs and agent
+The VouchRail integration SDK. Wraps existing LLM SDKs and agent
 framework calls to produce **tamper-evident audit logs designed to support
 EU AI Act Article 12** without forcing application rewrites.
 
 ## Install
 
 ```bash
-pnpm add @auditlayer/sdk
+pnpm add @vouchrail/sdk
 # Optional peer dependencies — install what you use:
 pnpm add @anthropic-ai/sdk
 pnpm add openai
@@ -18,7 +18,7 @@ pnpm add better-sqlite3       # only if you want SQLite-backed pseudonymization
 ## Configure
 
 ```ts
-import { AuditLogger } from '@auditlayer/sdk';
+import { AuditLogger } from '@vouchrail/sdk';
 
 const audit = new AuditLogger({
   systemId: 'hireflow-resume-screener',

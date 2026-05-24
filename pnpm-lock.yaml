@@ -38,7 +38,7 @@ importers:
 
   conformance-vectors/runners/ts:
     dependencies:
-      '@auditlayer/schema':
+      '@vouchrail/schema':
         specifier: workspace:^
         version: link:../../../packages/schema
     devDependencies:
@@ -51,10 +51,10 @@ importers:
 
   examples/credit-decision:
     dependencies:
-      '@auditlayer/schema':
+      '@vouchrail/schema':
         specifier: workspace:^
         version: link:../../packages/schema
-      '@auditlayer/sdk':
+      '@vouchrail/sdk':
         specifier: workspace:^
         version: link:../../packages/sdk
     devDependencies:
@@ -70,10 +70,10 @@ importers:
 
   examples/healthcare-triage:
     dependencies:
-      '@auditlayer/schema':
+      '@vouchrail/schema':
         specifier: workspace:^
         version: link:../../packages/schema
-      '@auditlayer/sdk':
+      '@vouchrail/sdk':
         specifier: workspace:^
         version: link:../../packages/sdk
     devDependencies:
@@ -89,10 +89,10 @@ importers:
 
   examples/resume-screening:
     dependencies:
-      '@auditlayer/schema':
+      '@vouchrail/schema':
         specifier: workspace:^
         version: link:../../packages/schema
-      '@auditlayer/sdk':
+      '@vouchrail/sdk':
         specifier: workspace:^
         version: link:../../packages/sdk
     devDependencies:
@@ -108,10 +108,10 @@ importers:
 
   packages/cli:
     dependencies:
-      '@auditlayer/schema':
+      '@vouchrail/schema':
         specifier: workspace:^
         version: link:../schema
-      '@auditlayer/sdk':
+      '@vouchrail/sdk':
         specifier: workspace:^
         version: link:../sdk
       commander:
@@ -152,7 +152,7 @@ importers:
 
   packages/sdk:
     dependencies:
-      '@auditlayer/schema':
+      '@vouchrail/schema':
         specifier: workspace:^
         version: link:../schema
       better-sqlite3:

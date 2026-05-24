@@ -1,4 +1,4 @@
-"""AuditLayer Python SDK — EU AI Act Article 12 audit log infrastructure."""
+"""VouchRail Python SDK — EU AI Act Article 12 audit log infrastructure."""
 
 from .defaults import (
     CLI_DEFAULTS,
@@ -10,14 +10,14 @@ from .defaults import (
 )
 from .errors import (
     ERROR_CODES,
-    AuditLayerConfigError,
-    AuditLayerError,
-    AuditLayerLifecycleError,
-    AuditLayerPiiError,
-    AuditLayerProviderError,
-    AuditLayerSchemaError,
-    AuditLayerSignerError,
-    AuditLayerStorageError,
+    VouchRailConfigError,
+    VouchRailError,
+    VouchRailLifecycleError,
+    VouchRailPiiError,
+    VouchRailProviderError,
+    VouchRailSchemaError,
+    VouchRailSignerError,
+    VouchRailStorageError,
 )
 from .logger import RECORDED_BY, AuditLogger
 from .pii import (
@@ -91,15 +91,6 @@ __all__ = [
     "SIGNING_DEFAULTS",
     # Defaults
     "STORAGE_DEFAULTS",
-    "AuditLayerConfigError",
-    # Errors
-    "AuditLayerError",
-    "AuditLayerLifecycleError",
-    "AuditLayerPiiError",
-    "AuditLayerProviderError",
-    "AuditLayerSchemaError",
-    "AuditLayerSignerError",
-    "AuditLayerStorageError",
     "AuditLogEntry",
     "AuditLogEntryInput",
     # Core SDK
@@ -118,6 +109,15 @@ __all__ = [
     "SqlitePiiTokenStore",
     # Storage
     "StorageBackend",
+    "VouchRailConfigError",
+    # Errors
+    "VouchRailError",
+    "VouchRailLifecycleError",
+    "VouchRailPiiError",
+    "VouchRailProviderError",
+    "VouchRailSchemaError",
+    "VouchRailSignerError",
+    "VouchRailStorageError",
     "WrapContext",
     # Util
     "assert_safe_path_segment",

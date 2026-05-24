@@ -2,7 +2,7 @@ import { mkdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 
-import { AuditLogger } from '@auditlayer/sdk';
+import { AuditLogger } from '@vouchrail/sdk';
 
 import { RESUME_SCORING, type ResumeScoringConfig } from './config.js';
 
@@ -113,7 +113,7 @@ async function main() {
   await audit.close();
   console.log(`\nAudit logs written to: ${auditDir}`);
   console.log(
-    `Run: npx @auditlayer/cli verify --system-id resume-screener-example --storage-dir ${auditDir}`,
+    `Run: npx @vouchrail/cli verify --system-id resume-screener-example --storage-dir ${auditDir}`,
   );
 }
 

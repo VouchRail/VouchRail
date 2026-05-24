@@ -1,7 +1,7 @@
 # Incident Response Playbook
 
 > Internal-facing playbook required by spec §13.6(D). Documented incident
-> response creates evidence of "duty of care" if AuditLayer is sued, and is
+> response creates evidence of "duty of care" if VouchRail is sued, and is
 > required by most Tech E&O insurers.
 
 ## Severity definitions
@@ -20,7 +20,7 @@
 | Detection                        | on-call / customer / researcher | —                                          | Sources: SECURITY.md inbox, Sentry, Statuspage, customer report |
 | Initial assessment               | on-call engineer                | ≤ 1 hour from detection                    | Confirm scope; assign severity                                  |
 | Customer notification (affected) | engineering lead                | ≤ 4 hours for SEV-1; ≤ 24 hours for SEV-2  | Email + status page                                             |
-| Public status page update        | engineering lead                | ≤ 24 hours for SEV-1/2                     | `status.auditlayer.io`                                          |
+| Public status page update        | engineering lead                | ≤ 24 hours for SEV-1/2                     | `status.vouchrail.com`                                          |
 | Mitigation deployed              | engineering lead                | ≤ 24 hours for SEV-1; ≤ 72 hours for SEV-2 | Workaround acceptable                                           |
 | Permanent fix shipped            | engineering lead                | ≤ 14 days for SEV-1; ≤ 30 days for SEV-2   | Plus regression test                                            |
 | Post-mortem published            | engineering lead                | ≤ 7 days after fix                         | Public for SEV-1/2 unless customer requests otherwise           |
@@ -33,7 +33,7 @@ then, communications are drafted ad-hoc using the timeline above.
 
 ## Audit-chain integrity incidents (special category)
 
-Because AuditLayer customers may use audit logs as legal evidence, an incident
+Because VouchRail customers may use audit logs as legal evidence, an incident
 that may have compromised hash chain integrity or signature validity requires
 **additional steps** beyond ordinary incident response:
 

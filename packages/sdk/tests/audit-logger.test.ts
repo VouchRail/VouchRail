@@ -4,11 +4,11 @@ import { join } from 'node:path';
 
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { verifyChain } from '@auditlayer/schema';
+import { verifyChain } from '@vouchrail/schema';
 
 import { AuditLogger } from '../src/audit-logger.js';
 import { LocalStorageBackend } from '../src/backends/local.js';
-import { AuditLayerLifecycleError, AuditLayerProviderError, ERROR_CODES } from '../src/errors.js';
+import { VouchRailLifecycleError, VouchRailProviderError, ERROR_CODES } from '../src/errors.js';
 
 const TEST_SECRET = 'test-secret-key-with-enough-length-1234567890';
 
@@ -33,7 +33,7 @@ async function collectAll(backend: LocalStorageBackend, systemId: string) {
 describe('AuditLogger', () => {
   let dir: string;
   beforeEach(() => {
-    dir = mkdtempSync(join(tmpdir(), 'auditlayer-'));
+    dir = mkdtempSync(join(tmpdir(), 'vouchrail-'));
   });
   afterEach(() => {
     rmSync(dir, { recursive: true, force: true });
@@ -92,14 +92,14 @@ describe('AuditLogger', () => {
     await audit.close();
   });
 
-  it('rejects endCall for unknown callId with AuditLayerLifecycleError', async () => {
+  it('rejects endCall for unknown callId with VouchRailLifecycleError', async () => {
     const audit = makeLogger(dir);
     try {
       await audit.endCall('unknown', {});
       throw new Error('expected endCall to throw');
     } catch (err) {
-      expect(err).toBeInstanceOf(AuditLayerLifecycleError);
-      expect((err as AuditLayerLifecycleError).code).toBe(ERROR_CODES.LOGGER_CALL_NOT_PENDING);
+      expect(err).toBeInstanceOf(VouchRailLifecycleError);
+      expect((err as VouchRailLifecycleError).code).toBe(ERROR_CODES.LOGGER_CALL_NOT_PENDING);
     }
     await audit.close();
   });
@@ -193,8 +193,8 @@ describe('AuditLogger', () => {
       });
       throw new Error('expected wrap() to throw');
     } catch (err) {
-      expect(err).toBeInstanceOf(AuditLayerProviderError);
-      expect((err as AuditLayerProviderError).code).toBe(ERROR_CODES.PROVIDER_UNSUPPORTED_CLIENT);
+      expect(err).toBeInstanceOf(VouchRailProviderError);
+      expect((err as VouchRailProviderError).code).toBe(ERROR_CODES.PROVIDER_UNSUPPORTED_CLIENT);
     }
   });
 
