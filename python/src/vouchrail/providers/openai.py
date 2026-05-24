@@ -5,6 +5,7 @@ from __future__ import annotations
 import inspect
 from typing import Any
 
+from ._shared import extract_output, merge_first_dict_arg, pick_keys
 from .base import PROVIDER_ERROR_RISK_FLAG, ProviderHostLogger, WrapContext
 
 OPENAI_CONFIG_KEYS: tuple[str, ...] = (
@@ -16,16 +17,6 @@ OPENAI_CONFIG_KEYS: tuple[str, ...] = (
 )
 
 OPENAI_OUTPUT_KEYS: tuple[str, ...] = ("choices", "usage", "model", "id")
-
-
-def _pick_keys(params: dict[str, Any], keys: tuple[str, ...]) -> dict[str, Any]:
-    return {k: params[k] for k in keys if k in params}
-
-
-def _extract_output(response: Any, keys: tuple[str, ...]) -> Any:
-    if isinstance(response, dict):
-        return {k: response.get(k) for k in keys}
-    return response
 
 
 class OpenAiAdapter:
@@ -48,11 +39,7 @@ class OpenAiAdapter:
         original_create = completions.create
 
         def wrapped_create(*args: Any, **kwargs: Any) -> Any:
-            params: dict[str, Any] = dict(kwargs)
-            if args:
-                first = args[0]
-                if isinstance(first, dict):
-                    params = {**first, **params}
+            params = merge_first_dict_arg(args, kwargs)
             model = str(params.get("model") or "unknown")
             call_id = audit.start_call(
                 case_id=context.case_id,
@@ -61,7 +48,7 @@ class OpenAiAdapter:
                 model_provider="openai",
                 model_name=model,
                 model_version=model,
-                model_configuration=_pick_keys(params, OPENAI_CONFIG_KEYS),
+                model_configuration=pick_keys(params, OPENAI_CONFIG_KEYS),
                 prompt_template_id=context.prompt_template_id,
                 prompt_template_version=context.prompt_template_version,
                 operator_id=context.operator_id,
@@ -69,7 +56,7 @@ class OpenAiAdapter:
             )
             try:
                 response = original_create(*args, **kwargs)
-                output = _extract_output(response, OPENAI_OUTPUT_KEYS)
+                output = extract_output(response, OPENAI_OUTPUT_KEYS)
                 audit.end_call(call_id, output=output, output_decision=output)
                 return response
             except Exception:

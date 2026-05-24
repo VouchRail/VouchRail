@@ -28,6 +28,39 @@ describe('detectPii', () => {
     expect(m).toHaveLength(1);
     expect(m[0]!.patternName).toBe('caseRef');
   });
+
+  it('drops overlapping matches so backwards replacement stays valid', () => {
+    // `4111-1111-1111-1111` matches BOTH phone and creditCard regexes at the
+    // same starting index. Before the dedup fix, backward replacement walked
+    // intersecting spans and corrupted the redacted output. Now exactly one
+    // match wins (the earliest, longest one), and any overlapping later match
+    // is dropped.
+    const m = detectPii('charged 4111-1111-1111-1111 today', {
+      phone: true,
+      creditCard: true,
+    });
+    expect(m).toHaveLength(1);
+    expect(m[0]!.match).toBe('4111-1111-1111-1111');
+  });
+});
+
+describe('PiiRedactor — overlap correctness', () => {
+  it('redacts overlapping pattern spans without corrupting the surrounding text', async () => {
+    const r = new PiiRedactor(
+      {
+        enabled: true,
+        strategy: 'hash',
+        patterns: { phone: true, creditCard: true },
+      },
+      null,
+    );
+    const result = await r.redact({ msg: 'charged 4111-1111-1111-1111 today' }, 'case-overlap');
+    const out = (result.redacted as { msg: string }).msg;
+    expect(out).not.toContain('4111-1111-1111-1111');
+    expect(out.startsWith('charged ')).toBe(true);
+    expect(out.endsWith(' today')).toBe(true);
+    expect(out).toMatch(/^charged pii-h:[0-9a-f]{16} today$/);
+  });
 });
 
 describe('InMemoryPiiTokenStore', () => {

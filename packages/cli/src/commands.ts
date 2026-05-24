@@ -54,8 +54,6 @@ export const defaultIO: CommandIO = {
   cwd: process.cwd(),
 };
 
-const DEFAULT_INIT_CONFIG = CLI_DEFAULTS.initConfigTemplate;
-
 export interface InitOptions {
   output?: string;
   force?: boolean;
@@ -64,7 +62,7 @@ export interface InitOptions {
 export async function initCommand(opts: InitOptions, io: CommandIO = defaultIO): Promise<number> {
   const path = resolve(io.cwd, opts.output ?? CLI_DEFAULTS.initOutputPath);
   try {
-    await writeFile(path, JSON.stringify(DEFAULT_INIT_CONFIG, null, 2) + '\n', {
+    await writeFile(path, JSON.stringify(CLI_DEFAULTS.initConfigTemplate, null, 2) + '\n', {
       encoding: 'utf8',
       flag: opts.force ? 'w' : 'wx',
     });

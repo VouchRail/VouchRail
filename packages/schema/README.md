@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="../../assets/logo-square.png" alt="VouchRail" width="160">
+</p>
+
 # @vouchrail/schema
 
 The schema, runtime validators, canonical serialization, and SHA-256

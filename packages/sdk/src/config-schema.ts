@@ -44,6 +44,7 @@ export const S3StorageConfigSchema = z
     prefix: z.string().optional(),
     workMode: z.boolean().optional(),
     endpoint: z.string().url().optional(),
+    kmsKeyId: z.string().min(1).optional(),
   })
   .strict();
 

@@ -4,6 +4,11 @@ export default defineConfig({
   test: {
     environment: 'node',
     include: ['tests/**/*.test.ts'],
+    env: {
+      // Tests construct InlineSigner repeatedly; the one-time dev-only
+      // warning is verified by signing.test.ts and silenced everywhere else.
+      VOUCHRAIL_SUPPRESS_INLINE_WARNING: '1',
+    },
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html', 'lcov'],

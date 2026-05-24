@@ -74,6 +74,9 @@ include = [
 testpaths = ["tests"]
 addopts = "-ra"
 asyncio_mode = "auto"
+filterwarnings = [
+    "ignore:InlineSigner is intended for development only.*:UserWarning",
+]
 
 [tool.ruff]
 line-length = 100

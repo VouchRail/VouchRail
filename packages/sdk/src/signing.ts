@@ -67,10 +67,9 @@ export function createSigner(config: SigningKeyConfig): Signer {
       return new ExternalSigner(config.keyId, config.sign);
     default: {
       const _exhaustive: never = config;
-      void _exhaustive;
       throw new VouchRailConfigError(
         ERROR_CODES.CONFIG_INVALID,
-        'createSigner: unknown signing key kind',
+        `createSigner: unknown signing key kind (${JSON.stringify(_exhaustive)})`,
         { received: config },
       );
     }

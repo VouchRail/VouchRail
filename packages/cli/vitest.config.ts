@@ -4,6 +4,9 @@ export default defineConfig({
   test: {
     environment: 'node',
     include: ['tests/**/*.test.ts'],
+    env: {
+      VOUCHRAIL_SUPPRESS_INLINE_WARNING: '1',
+    },
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html', 'lcov'],

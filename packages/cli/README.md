@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="../../assets/logo-square.png" alt="VouchRail" width="160">
+</p>
+
 # @vouchrail/cli
 
 Command-line tool for the VouchRail audit log. Used by engineers and

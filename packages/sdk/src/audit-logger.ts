@@ -79,7 +79,7 @@ export class AuditLogger {
     }
     const callId = uuidv4();
     const startedAt = nowIso();
-    const inputForLog = await this.redactInputForLog(input.input, input.caseId);
+    const inputForLog = await this.piiRedactor.redact(input.input, input.caseId);
     const promptForFingerprint = input.prompt ?? input.input;
     const pending: PendingCall = {
       callId,
@@ -121,7 +121,11 @@ export class AuditLogger {
     this.pending.delete(callId);
     const endedAt = nowIso();
 
-    const outputFingerprint = fingerprint(end.output ?? end.outputDecision ?? null);
+    // outputDecision wins when both are set — and the fingerprint covers the
+    // exact same value so a regulator can re-hash the stored decision and get
+    // the recorded outputFingerprint.
+    const decided = end.outputDecision ?? end.output ?? null;
+    const outputFingerprint = fingerprint(decided);
 
     const inputForEntry: AuditLogEntryInput = {
       schemaVersion: SCHEMA_VERSION,
@@ -145,7 +149,7 @@ export class AuditLogger {
       inputPiiRedacted: pending.inputPiiRedacted,
       referenceDatabase: pending.referenceDatabase,
       outputFingerprint,
-      outputDecision: end.outputDecision ?? end.output ?? null,
+      outputDecision: decided,
       reasonCodes: end.reasonCodes,
       operatorId: pending.operatorId,
       humanReview: end.humanReview,
@@ -175,9 +179,7 @@ export class AuditLogger {
       const entry: AuditLogEntry = { ...linked, signature };
       // Defense in depth: recompute the entry hash from the hashed payload
       // (everything except entryHash + signature) before persisting.
-      const { entryHash: _eh, signature: _sig, ...hashed } = entry;
-      void _eh;
-      void _sig;
+      const { entryHash: _entryHash, signature: _signature, ...hashed } = entry;
       const recheck = computeEntryHash(hashed);
       if (recheck !== entry.entryHash) {
         throw new VouchRailSchemaError(
@@ -205,10 +207,6 @@ export class AuditLogger {
     return release;
   }
 
-  private async redactInputForLog(value: unknown, caseId: string) {
-    return await this.piiRedactor.redact(value, caseId);
-  }
-
   /** Close storage and pii resources. */
   async close(): Promise<void> {
     await this.backend.close?.();
@@ -224,10 +222,9 @@ function createBackend(config: AuditLoggerConfig): StorageBackend {
       return new S3StorageBackend(config.storage);
     default: {
       const _exhaustive: never = config.storage;
-      void _exhaustive;
       throw new VouchRailConfigError(
         ERROR_CODES.CONFIG_UNKNOWN_BACKEND,
-        'AuditLogger: unknown storage backend',
+        `AuditLogger: unknown storage backend (${JSON.stringify(_exhaustive)})`,
         { received: config.storage },
       );
     }
@@ -245,10 +242,9 @@ function createPiiTokenStore(config: AuditLoggerConfig): PiiTokenStore | null {
       return new SqlitePiiTokenStore(store.path);
     default: {
       const _exhaustive: never = store;
-      void _exhaustive;
       throw new VouchRailConfigError(
         ERROR_CODES.CONFIG_UNKNOWN_STORE,
-        'AuditLogger: unknown pii token store type',
+        `AuditLogger: unknown pii token store type (${JSON.stringify(_exhaustive)})`,
         { received: store },
       );
     }
