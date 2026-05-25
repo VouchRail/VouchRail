@@ -4,8 +4,9 @@ Commands:
 
     vouchrail init    --output PATH
     vouchrail query   --case-id ID [--from ISO] [--to ISO] [--json]
-    vouchrail verify  [--from ISO] [--to ISO] [--case-id ID] [--json]
+    vouchrail verify  [--from ISO] [--to ISO] [--case-id ID] [--json] [--report PATH]
     vouchrail export  [--case-id ID] [--from ISO] [--to ISO] [--output PATH]
+    vouchrail anchor  [--output PATH]
 
 Storage / systemId can be passed via flags or via an
 ``vouchrail.config.json`` file in the current working directory.
@@ -22,10 +23,11 @@ from typing import Any
 
 from ..defaults import CLI_DEFAULTS
 from ..errors import ERROR_CODES, VouchRailConfigError, VouchRailSchemaError
-from ..schema.hash_chain import verify_chain
+from ..schema.hash_chain import ChainVerificationResult, verify_chain
+from ..schema.types import SDK_VERSION
 from ..storage.base import QueryOptions
 from ..storage.local_fs import LocalStorageBackend
-from ..util import now_iso  # noqa: F401  (kept for parity with TS CLI's date helpers)
+from ..util import now_iso
 
 # ----------------------------------------------------------------- config
 
@@ -237,16 +239,154 @@ def _cmd_verify(args: argparse.Namespace, cwd: Path) -> int:
             )
             + "\n",
         )
+    elif result.valid:
+        sys.stdout.write(f"✔ Chain valid. {_entry_count(len(entries))} verified.\n")
     else:
-        if result.valid:
-            sys.stdout.write(f"OK Chain valid. {_entry_count(len(entries))} verified.\n")
-        else:
-            sys.stdout.write(f"FAIL Chain INVALID at index {result.broken_at}.\n")
-            sys.stdout.write(f"  reason: {result.reason}\n")
-            if result.detail:
-                sys.stdout.write(f"  detail: {result.detail}\n")
+        sys.stdout.write(f"✘ Chain INVALID at index {result.broken_at}.\n")
+        sys.stdout.write(f"  reason: {result.reason}\n")
+        if result.detail:
+            sys.stdout.write(f"  detail: {result.detail}\n")
+    if args.report:
+        report = _build_verification_report(cfg, args, entries, result)
+        report_path = cwd / args.report
+        ext = report_path.suffix.lower()
+        body = (
+            _render_report_markdown(report)
+            if ext == ".md"
+            else json.dumps(report, indent=2) + "\n"
+        )
+        report_path.write_text(body, encoding="utf-8")
+        sys.stderr.write(f"Wrote verification report to {args.report}\n")
     backend.close()
     return 0 if result.valid else 1
+
+
+def _build_verification_report(
+    cfg: CliConfig,
+    args: argparse.Namespace,
+    entries: list[dict[str, Any]],
+    result: ChainVerificationResult,
+) -> dict[str, Any]:
+    first = entries[0] if entries else None
+    last = entries[-1] if entries else None
+    chain: dict[str, Any] = (
+        {"valid": True}
+        if result.valid
+        else {
+            "valid": False,
+            "brokenAt": result.broken_at,
+            "reason": result.reason,
+            "detail": result.detail,
+        }
+    )
+    return {
+        "systemId": cfg.system_id,
+        "range": {
+            "from": args.from_,
+            "to": args.to,
+            "caseId": args.case_id,
+        },
+        "entriesVerified": len(entries),
+        "firstSequence": 0 if entries else None,
+        "lastSequence": len(entries) - 1 if entries else None,
+        "firstEntryHash": first["entryHash"] if first else None,
+        "lastEntryHash": last["entryHash"] if last else None,
+        "firstStartedAt": first["startedAt"] if first else None,
+        "lastEndedAt": last["endedAt"] if last else None,
+        "chain": chain,
+        "signatureCheck": {
+            "method": "not-performed",
+            "note": (
+                "Signature verification requires environment-specific key material; "
+                "this CLI verifies chain integrity only."
+            ),
+        },
+        "generatedAt": now_iso(),
+        "cliVersion": SDK_VERSION,
+    }
+
+
+def _render_report_markdown(r: dict[str, Any]) -> str:
+    def fmt(v: Any) -> str:
+        return "n/a" if v is None else str(v)
+
+    chain = r["chain"]
+    if chain["valid"]:
+        chain_block = "- **Status**: VALID — chain verified end-to-end."
+    else:
+        chain_block = (
+            f"- **Status**: INVALID at sequence {chain['brokenAt']}\n"
+            f"- **Reason**: {chain['reason']}\n"
+            f"- **Detail**: {fmt(chain.get('detail'))}"
+        )
+    range_ = r["range"]
+    return "\n".join(
+        [
+            "# VouchRail verification report",
+            "",
+            f"- **System ID**: {r['systemId']}",
+            f"- **Generated at**: {r['generatedAt']}",
+            f"- **CLI version**: {r['cliVersion']}",
+            "",
+            "## Range",
+            "",
+            f"- From: {fmt(range_['from'])}",
+            f"- To: {fmt(range_['to'])}",
+            f"- Case ID: {fmt(range_['caseId'])}",
+            "",
+            "## Records",
+            "",
+            f"- Entries verified: {r['entriesVerified']}",
+            f"- First sequence (within slice): {fmt(r['firstSequence'])}",
+            f"- Last sequence (within slice): {fmt(r['lastSequence'])}",
+            f"- First entry hash: {fmt(r['firstEntryHash'])}",
+            f"- Last entry hash: {fmt(r['lastEntryHash'])}",
+            f"- First startedAt: {fmt(r['firstStartedAt'])}",
+            f"- Last endedAt: {fmt(r['lastEndedAt'])}",
+            "",
+            "## Chain",
+            "",
+            chain_block,
+            "",
+            "## Signatures",
+            "",
+            r["signatureCheck"]["note"],
+            "",
+        ],
+    )
+
+
+def _cmd_anchor(args: argparse.Namespace, cwd: Path) -> int:
+    cfg = _resolve_config(args, cwd)
+    backend = _backend_for(cfg)
+    last: dict[str, Any] | None = None
+    count = 0
+    try:
+        for entry in backend.list(QueryOptions(system_id=cfg.system_id)):
+            last = entry
+            count += 1
+    finally:
+        backend.close()
+    if last is None:
+        sys.stderr.write(f"anchor: no entries found for system {cfg.system_id}.\n")
+        return 2
+    payload = {
+        "systemId": cfg.system_id,
+        "sequence": count - 1,
+        "entryCount": count,
+        "recordHash": f"sha256:{last['entryHash']}",
+        "algorithm": "sha256",
+        "signature": last["signature"],
+        "anchoredAt": now_iso(),
+        "cliVersion": SDK_VERSION,
+    }
+    body = json.dumps(payload, indent=2) + "\n"
+    if args.output:
+        (cwd / args.output).write_text(body, encoding="utf-8")
+        sys.stderr.write(f"Wrote anchor to {args.output}\n")
+    else:
+        sys.stdout.write(body)
+    return 0
 
 
 def _cmd_export(args: argparse.Namespace, cwd: Path) -> int:
@@ -307,6 +447,11 @@ def _build_parser() -> argparse.ArgumentParser:
     verify.add_argument("--from", dest="from_", help="inclusive lower bound (ISO-8601 UTC)")
     verify.add_argument("--to", dest="to", help="inclusive upper bound (ISO-8601 UTC)")
     verify.add_argument("--case-id", dest="case_id", help="limit verification to a single case")
+    verify.add_argument(
+        "--report",
+        dest="report",
+        help="write verification report to <path> (.json or .md)",
+    )
     verify.set_defaults(_fn=_cmd_verify)
 
     export = sub.add_parser("export", help="Export an evidence bundle to JSONL")
@@ -315,6 +460,13 @@ def _build_parser() -> argparse.ArgumentParser:
     export.add_argument("--to", dest="to")
     export.add_argument("--output", help="output file path (defaults to stdout)")
     export.set_defaults(_fn=_cmd_export)
+
+    anchor = sub.add_parser(
+        "anchor",
+        help="Emit a chain-head anchor (last sequence, entryHash, signature)",
+    )
+    anchor.add_argument("--output", help="output file path (defaults to stdout)")
+    anchor.set_defaults(_fn=_cmd_anchor)
 
     return p
 

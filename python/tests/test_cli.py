@@ -48,7 +48,7 @@ def test_verify_clean_chain(seeded: tuple[str, str], capsys: pytest.CaptureFixtu
     code = main(["--system-id", sys_id, "--storage-dir", dir_, "verify"])
     captured = capsys.readouterr()
     assert code == 0
-    assert "OK Chain valid" in captured.out
+    assert "✔ Chain valid" in captured.out
     assert "3 entries verified" in captured.out
 
 
@@ -137,3 +137,132 @@ def test_explicit_config_with_traversal_rejected(capsys: pytest.CaptureFixture[s
         captured = capsys.readouterr()
         assert code == 1
         assert "must not contain '..'" in captured.err
+
+
+def test_verify_report_json(seeded: tuple[str, str], capsys: pytest.CaptureFixture[str]) -> None:
+    dir_, sys_id = seeded
+    with tempfile.TemporaryDirectory(prefix="vouchrail-cli-rep-") as out_dir:
+        code = main(
+            [
+                "--system-id",
+                sys_id,
+                "--storage-dir",
+                dir_,
+                "verify",
+                "--report",
+                "report.json",
+            ],
+            cwd=Path(out_dir),
+        )
+        assert code == 0
+        report = json.loads((Path(out_dir) / "report.json").read_text(encoding="utf-8"))
+        assert report["systemId"] == sys_id
+        assert report["entriesVerified"] == 3
+        assert report["firstSequence"] == 0
+        assert report["lastSequence"] == 2
+        assert report["chain"] == {"valid": True}
+        assert report["signatureCheck"]["method"] == "not-performed"
+        assert isinstance(report["generatedAt"], str)
+        assert isinstance(report["cliVersion"], str)
+
+
+def test_verify_report_markdown(
+    seeded: tuple[str, str], capsys: pytest.CaptureFixture[str],
+) -> None:
+    dir_, sys_id = seeded
+    with tempfile.TemporaryDirectory(prefix="vouchrail-cli-rep-") as out_dir:
+        code = main(
+            [
+                "--system-id",
+                sys_id,
+                "--storage-dir",
+                dir_,
+                "verify",
+                "--report",
+                "report.md",
+            ],
+            cwd=Path(out_dir),
+        )
+        assert code == 0
+        md = (Path(out_dir) / "report.md").read_text(encoding="utf-8")
+        assert md.startswith("# VouchRail verification report")
+        assert "Status**: VALID" in md
+        assert "Entries verified: 3" in md
+
+
+def test_verify_report_records_broken_chain(capsys: pytest.CaptureFixture[str]) -> None:
+    with tempfile.TemporaryDirectory(prefix="vouchrail-cli-") as d:
+        _seed(d)
+        # Tamper with a JSONL line.
+        jsonl_files = sorted(Path(d).rglob("*.jsonl"))
+        assert jsonl_files, "expected at least one JSONL after seeding"
+        first_file = jsonl_files[0]
+        lines = first_file.read_text(encoding="utf-8").splitlines()
+        entry = json.loads(lines[0])
+        entry["outputDecision"] = {"tampered": True}
+        lines[0] = json.dumps(entry, separators=(",", ":"))
+        first_file.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+        with tempfile.TemporaryDirectory(prefix="vouchrail-cli-rep-") as out_dir:
+            code = main(
+                [
+                    "--system-id",
+                    "sys-cli",
+                    "--storage-dir",
+                    d,
+                    "verify",
+                    "--report",
+                    "report.json",
+                ],
+                cwd=Path(out_dir),
+            )
+            assert code == 1
+            report = json.loads((Path(out_dir) / "report.json").read_text(encoding="utf-8"))
+            assert report["chain"]["valid"] is False
+            assert report["chain"]["brokenAt"] == 0
+            assert report["chain"]["reason"] == "entry_hash_mismatch"
+            assert isinstance(report["chain"]["detail"], str)
+
+
+def test_anchor_emits_chain_head(
+    seeded: tuple[str, str], capsys: pytest.CaptureFixture[str],
+) -> None:
+    dir_, sys_id = seeded
+    code = main(["--system-id", sys_id, "--storage-dir", dir_, "anchor"])
+    captured = capsys.readouterr()
+    assert code == 0
+    payload = json.loads(captured.out.strip())
+    assert payload["systemId"] == sys_id
+    assert payload["sequence"] == 2
+    assert payload["entryCount"] == 3
+    assert payload["recordHash"].startswith("sha256:")
+    assert payload["algorithm"] == "sha256"
+    assert isinstance(payload["signature"], str)
+    assert payload["signature"]
+    assert isinstance(payload["anchoredAt"], str)
+    assert isinstance(payload["cliVersion"], str)
+
+
+def test_anchor_writes_to_file(
+    seeded: tuple[str, str], capsys: pytest.CaptureFixture[str],
+) -> None:
+    dir_, sys_id = seeded
+    with tempfile.TemporaryDirectory(prefix="vouchrail-cli-anchor-") as out_dir:
+        out_path = Path(out_dir) / "chain-head.json"
+        code = main(
+            ["--system-id", sys_id, "--storage-dir", dir_, "anchor", "--output", str(out_path)],
+            cwd=Path(out_dir),
+        )
+        captured = capsys.readouterr()
+        assert code == 0
+        payload = json.loads(out_path.read_text(encoding="utf-8"))
+        assert payload["entryCount"] == 3
+        assert "Wrote anchor" in captured.err
+
+
+def test_anchor_returns_2_when_empty(capsys: pytest.CaptureFixture[str]) -> None:
+    with tempfile.TemporaryDirectory(prefix="vouchrail-cli-") as d:
+        code = main(["--system-id", "sys-empty", "--storage-dir", d, "anchor"], cwd=Path(d))
+        captured = capsys.readouterr()
+        assert code == 2
+        assert "no entries found" in captured.err

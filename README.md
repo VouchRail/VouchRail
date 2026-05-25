@@ -87,6 +87,7 @@ Full guides live in [`docs/`](./docs/):
 - [Quickstart](./docs/quickstart.md) · [Architecture](./docs/architecture.md) · [Configuration reference](./docs/configuration.md)
 - [Providers](./docs/providers.md) · [Storage backends](./docs/storage-backends.md) · [PII redaction](./docs/pii-redaction.md) · [Signing keys](./docs/signing-keys.md)
 - [Schema + hash chain](./docs/schema.md) · [CLI usage](./docs/cli.md) · [Cross-language conformance](./docs/conformance.md)
+- [Threat model](./docs/threat-model.md) · [Storage hardening](./docs/storage-hardening.md) · [PII + erasure](./docs/pii-and-erasure.md) · [Roadmap](./ROADMAP.md)
 
 ## Why not just my observability tool
 
@@ -105,7 +106,7 @@ Alpha. APIs may shift before `v1.0`. Working today:
 - CLI in both languages: `init` / `query` / `verify` / `export`.
 - Cross-language hash chain (RFC 8785 JCS + ECMA-262 NumberToString). 16 conformance vectors gate every build.
 
-Not yet: LangChain / LangGraph adapters, hosted dashboard, ML-based PII, SOC 2.
+Not yet: LangChain / LangGraph adapters, hosted dashboard, ML-based PII, SOC 2. See [ROADMAP.md](./ROADMAP.md).
 
 ## Layout
 

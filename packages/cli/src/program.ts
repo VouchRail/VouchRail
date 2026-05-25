@@ -1,6 +1,12 @@
 import { Command, Option } from 'commander';
 
-import { exportCommand, initCommand, queryCommand, verifyCommand } from './commands.js';
+import {
+  anchorCommand,
+  exportCommand,
+  initCommand,
+  queryCommand,
+  verifyCommand,
+} from './commands.js';
 import { loadConfig, resolveConfig, type ConfigOverrides } from './config.js';
 import { CLI_VERSION } from './version.js';
 
@@ -66,14 +72,32 @@ export function buildProgram(runOpts: RunOptions = {}): Command {
     .option('--from <iso>', 'inclusive lower bound (ISO-8601 UTC)')
     .option('--to <iso>', 'inclusive upper bound (ISO-8601 UTC)')
     .option('--case-id <id>', 'limit verification to a single case')
-    .action(async (opts: { from?: string; to?: string; caseId?: string }) => {
-      const { json, ...rest } = collectGlobals(program.opts());
-      const config = resolveConfig(await loadConfig(rest.config), rest);
-      const code = await verifyCommand(
-        config,
-        { ...opts, json },
-        { stdout: process.stdout, stderr: process.stderr, cwd },
-      );
+    .option('--report <path>', 'write verification report to <path> (.json or .md)')
+    .action(
+      async (opts: { from?: string; to?: string; caseId?: string; report?: string }) => {
+        const { json, ...rest } = collectGlobals(program.opts());
+        const config = resolveConfig(await loadConfig(rest.config), rest);
+        const code = await verifyCommand(
+          config,
+          { ...opts, json },
+          { stdout: process.stdout, stderr: process.stderr, cwd },
+        );
+        if (code !== 0) process.exitCode = code;
+      },
+    );
+
+  program
+    .command('anchor')
+    .description('Emit a chain-head anchor (last sequence, entryHash, signature) for external pinning')
+    .option('--output <path>', 'output file path (defaults to stdout)')
+    .action(async (opts: { output?: string }) => {
+      const globals = collectGlobals(program.opts());
+      const config = resolveConfig(await loadConfig(globals.config), globals);
+      const code = await anchorCommand(config, opts, {
+        stdout: process.stdout,
+        stderr: process.stderr,
+        cwd,
+      });
       if (code !== 0) process.exitCode = code;
     });
 

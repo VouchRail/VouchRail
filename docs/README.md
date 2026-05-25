@@ -15,12 +15,19 @@ Topic-by-topic guides for VouchRail. Each page is short and self-contained.
 - [PII redaction](./pii-redaction.md) — patterns, strategies (pseudonymize / hash / remove), token stores, GDPR erasure.
 - [Signing keys](./signing-keys.md) — inline (dev), KMS-pluggable (prod), key custody, the dev-only warning.
 - [Schema + hash chain](./schema.md) — Article 12 field mapping, JCS canonicalization, chain integrity, schemaVersion.
-- [CLI usage](./cli.md) — `init` / `query` / `verify` / `export`, JSON output, config discovery.
+- [CLI usage](./cli.md) — `init` / `query` / `verify` / `export` / `anchor`, JSON + Markdown reports, config discovery.
+
+## Hardening
+
+- [Threat model](./threat-model.md) — what VouchRail defends against, what it doesn't, recommended controls.
+- [Storage hardening](./storage-hardening.md) — production checklist for AWS S3 Object Lock, IAM separation, KMS, backups.
+- [PII + erasure](./pii-and-erasure.md) — the Article 12 × GDPR pattern; what erasure removes; what cannot be undone.
 
 ## Reference
 
 - [Cross-language conformance](./conformance.md) — what byte-identity means, how the conformance suite gates CI.
 - [Examples](../examples/) — HR resume screening, fintech credit, healthcare triage.
+- [Roadmap](../ROADMAP.md) — Now / Next / Later commitments.
 - [Legal templates](../legal/) — ToS, privacy, DPA, AUP — attorney review required before use.
 - [Known limitations](../legal/limitations.md) — what VouchRail does not do and does not certify.
 - [Security policy](../SECURITY.md) — reporting vulnerabilities; scope; safe harbor.

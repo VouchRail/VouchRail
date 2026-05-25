@@ -1,6 +1,6 @@
 import { createWriteStream } from 'node:fs';
 import { writeFile } from 'node:fs/promises';
-import { resolve } from 'node:path';
+import { extname, resolve } from 'node:path';
 
 import {
   AuditLogEntrySchema,
@@ -17,6 +17,7 @@ import {
 
 import { createBackend } from './backend-factory.js';
 import type { CliConfig } from './config.js';
+import { CLI_VERSION } from './version.js';
 
 function validateIsoBound(value: string | undefined, label: string): void {
   if (value === undefined) return;
@@ -119,6 +120,7 @@ export interface VerifyOptions {
   to?: string;
   caseId?: string;
   json?: boolean;
+  report?: string;
 }
 
 export async function verifyCommand(
@@ -146,17 +148,178 @@ export async function verifyCommand(
         result,
       }) + '\n',
     );
+  } else if (result.valid) {
+    io.stdout.write(`✔ Chain valid. ${entryCount(entries.length)} verified.\n`);
   } else {
-    if (result.valid) {
-      io.stdout.write(`✔ Chain valid. ${entryCount(entries.length)} verified.\n`);
-    } else {
-      io.stdout.write(`✘ Chain INVALID at index ${result.brokenAt}.\n`);
-      io.stdout.write(`  reason: ${result.reason}\n`);
-      if (result.detail) io.stdout.write(`  detail: ${result.detail}\n`);
-    }
+    io.stdout.write(`✘ Chain INVALID at index ${result.brokenAt}.\n`);
+    io.stdout.write(`  reason: ${result.reason}\n`);
+    if (result.detail) io.stdout.write(`  detail: ${result.detail}\n`);
+  }
+  if (opts.report) {
+    const report = buildVerificationReport(config, opts, entries, result);
+    const path = resolve(io.cwd, opts.report);
+    const ext = extname(opts.report).toLowerCase();
+    const body = ext === '.md' ? renderReportMarkdown(report) : JSON.stringify(report, null, 2) + '\n';
+    await writeFile(path, body, 'utf8');
+    io.stderr.write(`Wrote verification report to ${opts.report}\n`);
   }
   await backend.close?.();
   return result.valid ? 0 : 1;
+}
+
+export interface VerificationReport {
+  systemId: string;
+  range: { from: string | null; to: string | null; caseId: string | null };
+  entriesVerified: number;
+  firstSequence: number | null;
+  lastSequence: number | null;
+  firstEntryHash: string | null;
+  lastEntryHash: string | null;
+  firstStartedAt: string | null;
+  lastEndedAt: string | null;
+  chain:
+    | { valid: true }
+    | { valid: false; brokenAt: number; reason: string; detail: string | null };
+  signatureCheck: { method: 'not-performed'; note: string };
+  generatedAt: string;
+  cliVersion: string;
+}
+
+function buildVerificationReport(
+  config: CliConfig,
+  opts: VerifyOptions,
+  entries: AuditLogEntry[],
+  result: ChainVerificationResult,
+): VerificationReport {
+  const first = entries[0];
+  const last = entries[entries.length - 1];
+  return {
+    systemId: config.systemId,
+    range: {
+      from: opts.from ?? null,
+      to: opts.to ?? null,
+      caseId: opts.caseId ?? null,
+    },
+    entriesVerified: entries.length,
+    firstSequence: entries.length > 0 ? 0 : null,
+    lastSequence: entries.length > 0 ? entries.length - 1 : null,
+    firstEntryHash: first?.entryHash ?? null,
+    lastEntryHash: last?.entryHash ?? null,
+    firstStartedAt: first?.startedAt ?? null,
+    lastEndedAt: last?.endedAt ?? null,
+    chain: result.valid
+      ? { valid: true }
+      : {
+          valid: false,
+          brokenAt: result.brokenAt,
+          reason: result.reason,
+          detail: result.detail ?? null,
+        },
+    signatureCheck: {
+      method: 'not-performed',
+      note: 'Signature verification requires environment-specific key material; this CLI verifies chain integrity only.',
+    },
+    generatedAt: new Date().toISOString(),
+    cliVersion: CLI_VERSION,
+  };
+}
+
+function renderReportMarkdown(r: VerificationReport): string {
+  const fmt = (v: unknown): string => (v === null || v === undefined ? 'n/a' : String(v));
+  const chainBlock = r.chain.valid
+    ? '- **Status**: VALID — chain verified end-to-end.'
+    : [
+        `- **Status**: INVALID at sequence ${r.chain.brokenAt}`,
+        `- **Reason**: ${r.chain.reason}`,
+        `- **Detail**: ${fmt(r.chain.detail)}`,
+      ].join('\n');
+  return [
+    '# VouchRail verification report',
+    '',
+    `- **System ID**: ${r.systemId}`,
+    `- **Generated at**: ${r.generatedAt}`,
+    `- **CLI version**: ${r.cliVersion}`,
+    '',
+    '## Range',
+    '',
+    `- From: ${fmt(r.range.from)}`,
+    `- To: ${fmt(r.range.to)}`,
+    `- Case ID: ${fmt(r.range.caseId)}`,
+    '',
+    '## Records',
+    '',
+    `- Entries verified: ${r.entriesVerified}`,
+    `- First sequence (within slice): ${fmt(r.firstSequence)}`,
+    `- Last sequence (within slice): ${fmt(r.lastSequence)}`,
+    `- First entry hash: ${fmt(r.firstEntryHash)}`,
+    `- Last entry hash: ${fmt(r.lastEntryHash)}`,
+    `- First startedAt: ${fmt(r.firstStartedAt)}`,
+    `- Last endedAt: ${fmt(r.lastEndedAt)}`,
+    '',
+    '## Chain',
+    '',
+    chainBlock,
+    '',
+    '## Signatures',
+    '',
+    r.signatureCheck.note,
+    '',
+  ].join('\n');
+}
+
+export interface AnchorOptions {
+  output?: string;
+}
+
+export interface AnchorPayload {
+  systemId: string;
+  sequence: number;
+  entryCount: number;
+  recordHash: string;
+  algorithm: 'sha256';
+  signature: string;
+  anchoredAt: string;
+  cliVersion: string;
+}
+
+export async function anchorCommand(
+  config: CliConfig,
+  opts: AnchorOptions,
+  io: CommandIO = defaultIO,
+): Promise<number> {
+  const backend = createBackend(config.storage);
+  let last: AuditLogEntry | null = null;
+  let count = 0;
+  try {
+    for await (const e of backend.list({ systemId: config.systemId })) {
+      last = AuditLogEntrySchema.parse(e);
+      count++;
+    }
+  } finally {
+    await backend.close?.();
+  }
+  if (!last) {
+    io.stderr.write(`anchor: no entries found for system ${config.systemId}.\n`);
+    return 2;
+  }
+  const payload: AnchorPayload = {
+    systemId: config.systemId,
+    sequence: count - 1,
+    entryCount: count,
+    recordHash: `sha256:${last.entryHash}`,
+    algorithm: 'sha256',
+    signature: last.signature,
+    anchoredAt: new Date().toISOString(),
+    cliVersion: CLI_VERSION,
+  };
+  const body = JSON.stringify(payload, null, 2) + '\n';
+  if (opts.output) {
+    await writeFile(resolve(io.cwd, opts.output), body, 'utf8');
+    io.stderr.write(`Wrote anchor to ${opts.output}\n`);
+  } else {
+    io.stdout.write(body);
+  }
+  return 0;
 }
 
 export interface ExportOptions {
